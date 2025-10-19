@@ -62,10 +62,18 @@ export default function LoginScreen() {
       // Set form-level error from API
       const errorMessage = error instanceof Error ? error.message : 'Login failed. Please try again.';
 
-      // Check if error is EMAIL_NOT_VERIFIED
-      if (errorMessage.toLowerCase().includes('verify your email') ||
-          errorMessage.toLowerCase().includes('email not verified')) {
-        // Redirect to verify-email screen
+      // Check for structured error code first, then fall back to message checking
+      const isEmailNotVerified = 
+        // Check for structured error code (preferred)
+        (error as any)?.code === 'EMAIL_NOT_VERIFIED' ||
+        (error as any)?.response?.data?.code === 'EMAIL_NOT_VERIFIED' ||
+        (error as any)?.extensions?.code === 'EMAIL_NOT_VERIFIED' ||
+        // Fallback to message checking (for backward compatibility)
+        errorMessage.toLowerCase().includes('verify your email') ||
+        errorMessage.toLowerCase().includes('email not verified');
+
+      if (isEmailNotVerified) {
+        // Redirect to verify-email screen with encoded email
         router.push(`/(auth)/verify-email?email=${encodeURIComponent(data.email)}`);
         return;
       }
