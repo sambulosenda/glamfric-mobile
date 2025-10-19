@@ -45,7 +45,7 @@ export default function VerifyTokenScreen() {
     };
 
     handleVerification();
-  }, [token]);
+  }, [token, verifyEmail]);
 
   const handleContinue = () => {
     if (status === 'success') {
