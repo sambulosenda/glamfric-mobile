@@ -85,6 +85,7 @@ export const PasswordInput = forwardRef<TextInput, PasswordInputProps>(
               ${className || ''}
             `.trim()}
             placeholderTextColor="#9CA3AF"
+            textAlignVertical="center"
             secureTextEntry={!showPassword}
             editable={!disabled}
             accessible

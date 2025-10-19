@@ -42,6 +42,7 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(
             ${className || ''}
           `.trim()}
           placeholderTextColor="#9CA3AF"
+          textAlignVertical="center"
           editable={!disabled}
           accessible
           accessibilityLabel={label}
