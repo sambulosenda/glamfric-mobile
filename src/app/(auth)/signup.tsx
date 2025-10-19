@@ -176,6 +176,8 @@ export default function SignupScreen() {
                 strengthScore={passwordStrength.score}
                 strengthLabel={passwordStrength.label}
                 strengthColor={passwordStrength.color}
+                showRequirements
+                password={value}
                 blurOnSubmit={false}
               />
             )}

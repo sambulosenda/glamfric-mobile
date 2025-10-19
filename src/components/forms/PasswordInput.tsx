@@ -18,6 +18,8 @@ export interface PasswordInputProps extends Omit<TextInputProps, 'onChange' | 's
   strengthScore?: number;
   strengthLabel?: string;
   strengthColor?: string;
+  showRequirements?: boolean;
+  password?: string;
 }
 
 /**
@@ -42,6 +44,8 @@ export const PasswordInput = forwardRef<TextInput, PasswordInputProps>(
       strengthScore = 0,
       strengthLabel = '',
       strengthColor = '',
+      showRequirements = false,
+      password = '',
       ...props
     },
     ref
@@ -52,6 +56,19 @@ export const PasswordInput = forwardRef<TextInput, PasswordInputProps>(
     const togglePasswordVisibility = () => {
       setShowPassword((prev) => !prev);
     };
+
+    // Password requirements checker
+    const getPasswordRequirements = () => {
+      return {
+        minLength: password.length >= 8,
+        hasUppercase: /[A-Z]/.test(password),
+        hasLowercase: /[a-z]/.test(password),
+        hasNumber: /[0-9]/.test(password),
+        hasSpecial: /[^a-zA-Z0-9]/.test(password),
+      };
+    };
+
+    const requirements = showRequirements && password ? getPasswordRequirements() : null;
 
     return (
       <View className="mb-4">
@@ -117,6 +134,27 @@ export const PasswordInput = forwardRef<TextInput, PasswordInputProps>(
               ))}
             </View>
             <Text className={`text-xs ${strengthColor}`}>{strengthLabel}</Text>
+          </View>
+        )}
+
+        {/* Password Requirements Checklist */}
+        {requirements && !hasError && (
+          <View className="mt-2 space-y-1">
+            <Text className={`text-xs ${requirements.minLength ? 'text-green-600' : 'text-gray-500'}`}>
+              {requirements.minLength ? '✓' : '○'} At least 8 characters
+            </Text>
+            <Text className={`text-xs ${requirements.hasUppercase ? 'text-green-600' : 'text-gray-500'}`}>
+              {requirements.hasUppercase ? '✓' : '○'} One uppercase letter
+            </Text>
+            <Text className={`text-xs ${requirements.hasLowercase ? 'text-green-600' : 'text-gray-500'}`}>
+              {requirements.hasLowercase ? '✓' : '○'} One lowercase letter
+            </Text>
+            <Text className={`text-xs ${requirements.hasNumber ? 'text-green-600' : 'text-gray-500'}`}>
+              {requirements.hasNumber ? '✓' : '○'} One number
+            </Text>
+            <Text className={`text-xs ${requirements.hasSpecial ? 'text-green-600' : 'text-gray-500'}`}>
+              {requirements.hasSpecial ? '✓' : '○'} One special character
+            </Text>
           </View>
         )}
 
