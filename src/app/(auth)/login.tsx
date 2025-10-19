@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { View, Text, TouchableOpacity, TextInput as RNTextInput, ScrollView, Keyboard } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput as RNTextInput, Keyboard } from 'react-native';
 import { useRouter, Link } from 'expo-router';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -73,11 +73,11 @@ export default function LoginScreen() {
   return (
     <KeyboardAwareScrollView
       className="flex-1 bg-white"
-      contentContainerClassName="px-6 justify-center min-h-full"
       keyboardShouldPersistTaps="handled"
       bottomOffset={20}
     >
-      <View className="py-8">
+      <View className="px-6 justify-center min-h-full">
+        <View className="py-8">
         {/* Header */}
         <View className="mb-8">
           <Text className="text-3xl font-bold text-gray-900">Welcome Back</Text>
@@ -150,6 +150,7 @@ export default function LoginScreen() {
             </Link>
           </View>
         </View>
+      </View>
       </View>
     </KeyboardAwareScrollView>
   );
