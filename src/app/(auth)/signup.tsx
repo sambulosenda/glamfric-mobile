@@ -95,11 +95,11 @@ export default function SignupScreen() {
   return (
     <KeyboardAwareScrollView
       className="flex-1 bg-white"
+      contentContainerStyle={{ flexGrow: 1 }}
       keyboardShouldPersistTaps="handled"
-      bottomOffset={20}
+      bottomOffset={40}
     >
-      <View className="px-6 justify-center min-h-full">
-        <View className="py-8">
+      <View className="flex-1 px-6 justify-center py-8">
         {/* Header */}
         <View className="mb-8">
           <Text className="text-3xl font-bold text-gray-900">Create Account</Text>
@@ -221,7 +221,6 @@ export default function SignupScreen() {
             </Link>
           </View>
         </View>
-      </View>
       </View>
     </KeyboardAwareScrollView>
   );
