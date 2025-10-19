@@ -76,10 +76,12 @@ export default function SignupScreen() {
       Keyboard.dismiss();
 
       // Call auth store signup action
-      await signup(data.email, data.password, data.name);
+      const result = await signup(data.email, data.password, data.name);
 
-      // Navigate to tabs on success
-      router.replace('/(tabs)');
+      // Navigate to verify-email screen with email parameter
+      if (result.requiresVerification) {
+        router.replace(`/(auth)/verify-email?email=${encodeURIComponent(data.email)}`);
+      }
     } catch (error) {
       // Set form-level error from API
       const errorMessage = error instanceof Error ? error.message : 'Signup failed. Please try again.';

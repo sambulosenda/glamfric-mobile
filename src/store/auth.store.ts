@@ -9,7 +9,7 @@ import {
   removeUserData,
 } from '@/features/auth/authStorage';
 import { apolloClient } from '@/graphql/client';
-import { LOGIN_MUTATION, SIGNUP_MUTATION } from '@/graphql/mutations/auth';
+import { LOGIN_MUTATION, SIGNUP_MUTATION, VERIFY_EMAIL_MUTATION, RESEND_VERIFICATION_MUTATION } from '@/graphql/mutations/auth';
 
 /**
  * Auth Store State Interface
@@ -25,7 +25,9 @@ interface AuthState {
 
   // Actions
   login: (email: string, password: string) => Promise<void>;
-  signup: (email: string, password: string, name: string) => Promise<void>;
+  signup: (email: string, password: string, name: string) => Promise<{ requiresVerification: boolean; userId: string; message: string }>;
+  verifyEmail: (token: string) => Promise<void>;
+  resendVerification: (email: string) => Promise<void>;
   logout: () => Promise<void>;
   setUser: (user: UserData | null) => void;
   setLoading: (isLoading: boolean) => void;
@@ -122,7 +124,7 @@ export const useAuthStore = create<AuthState>()(
 
       /**
        * Signup function
-       * Creates new user account and authenticates
+       * Creates new user account - requires email verification before login
        */
       signup: async (email: string, password: string, name: string) => {
         try {
@@ -135,27 +137,85 @@ export const useAuthStore = create<AuthState>()(
             },
           });
 
+          set({ isLoading: false });
+
           if (data?.signup) {
-            const { token, user: userData } = data.signup;
-
-            // Save token to SecureStore
-            await saveAuthToken(token);
-
-            // Save user data to MMKV
-            await saveUserData(userData);
-
-            // Update store state
-            set({
-              user: userData,
-              isAuthenticated: true,
-              isLoading: false,
-              error: null,
-            });
+            return {
+              requiresVerification: data.signup.requiresVerification,
+              userId: data.signup.userId,
+              message: data.signup.message,
+            };
           }
+
+          throw new Error('Signup failed. Please try again.');
         } catch (err) {
           const apolloError = err as ApolloError;
           const errorMessage =
             apolloError.graphQLErrors[0]?.message || 'Signup failed. Please try again.';
+
+          set({
+            error: errorMessage,
+            isLoading: false,
+          });
+
+          throw new Error(errorMessage);
+        }
+      },
+
+      /**
+       * Verify email function
+       * Verifies user's email with token from email
+       */
+      verifyEmail: async (token: string) => {
+        try {
+          set({ error: null, isLoading: true });
+
+          const { data } = await apolloClient.mutate({
+            mutation: VERIFY_EMAIL_MUTATION,
+            variables: { token },
+          });
+
+          set({ isLoading: false });
+
+          if (!data?.verifyEmail?.success) {
+            throw new Error(data?.verifyEmail?.message || 'Email verification failed.');
+          }
+        } catch (err) {
+          const apolloError = err as ApolloError;
+          const errorMessage =
+            apolloError.graphQLErrors[0]?.message || 'Email verification failed. Please try again.';
+
+          set({
+            error: errorMessage,
+            isLoading: false,
+          });
+
+          throw new Error(errorMessage);
+        }
+      },
+
+      /**
+       * Resend verification email
+       * Sends a new verification email to the user
+       */
+      resendVerification: async (email: string) => {
+        try {
+          set({ error: null, isLoading: true });
+
+          const { data } = await apolloClient.mutate({
+            mutation: RESEND_VERIFICATION_MUTATION,
+            variables: { email },
+          });
+
+          set({ isLoading: false });
+
+          if (!data?.resendVerification?.success) {
+            throw new Error(data?.resendVerification?.message || 'Failed to resend verification email.');
+          }
+        } catch (err) {
+          const apolloError = err as ApolloError;
+          const errorMessage =
+            apolloError.graphQLErrors[0]?.message || 'Failed to resend verification email.';
 
           set({
             error: errorMessage,
@@ -232,6 +292,8 @@ export const authActions = {
     useAuthStore.getState().login(email, password),
   signup: (email: string, password: string, name: string) =>
     useAuthStore.getState().signup(email, password, name),
+  verifyEmail: (token: string) => useAuthStore.getState().verifyEmail(token),
+  resendVerification: (email: string) => useAuthStore.getState().resendVerification(email),
   logout: () => useAuthStore.getState().logout(),
   setUser: (user: UserData | null) => useAuthStore.getState().setUser(user),
   clearError: () => useAuthStore.getState().clearError(),
