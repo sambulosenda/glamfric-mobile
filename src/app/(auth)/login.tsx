@@ -1,83 +1,156 @@
-import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import React, { useRef } from 'react';
+import { View, Text, TouchableOpacity, TextInput as RNTextInput, Keyboard } from 'react-native';
 import { useRouter, Link } from 'expo-router';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { useAuthStore } from '@/store';
+import { loginSchema, LoginFormData } from '@/features/auth/validation';
+import { FormInput, PasswordInput, FormButton } from '@/components/forms';
 
+/**
+ * Login Screen
+ *
+ * Production-ready login form with:
+ * - react-hook-form for form state management
+ * - Zod validation with inline error messages
+ * - Show/hide password toggle
+ * - Keyboard-aware scrolling
+ * - Proper focus management
+ * - Form validation before submission
+ * - Better error handling
+ * - Accessibility support
+ */
 export default function LoginScreen() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const router = useRouter();
   const login = useAuthStore((state) => state.login);
   const isLoading = useAuthStore((state) => state.isLoading);
-  const router = useRouter();
 
-  const handleLogin = async () => {
-    if (!email || !password) {
-      Alert.alert('Error', 'Please fill in all fields');
-      return;
-    }
+  // Refs for focus management
+  const passwordRef = useRef<RNTextInput>(null);
 
+  // Initialize react-hook-form with Zod validation
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isValid },
+    setError,
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    mode: 'onBlur', // Validate on blur for better UX
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
+
+  /**
+   * Handle form submission
+   * Called only when form validation passes
+   */
+  const onSubmit = async (data: LoginFormData) => {
     try {
-      await login(email, password);
+      // Dismiss keyboard
+      Keyboard.dismiss();
+
+      // Call auth store login action
+      await login(data.email, data.password);
+
+      // Navigate to tabs on success
       router.replace('/(tabs)');
     } catch (error) {
-      Alert.alert('Login Failed', error instanceof Error ? error.message : 'Please try again');
+      // Set form-level error from API
+      const errorMessage = error instanceof Error ? error.message : 'Login failed. Please try again.';
+
+      // Set error on the most relevant field (email for invalid credentials)
+      setError('email', {
+        type: 'manual',
+        message: errorMessage,
+      });
     }
   };
 
   return (
-    <View className="flex-1 bg-white px-6 justify-center">
-      <View className="mb-8">
-        <Text className="text-3xl font-bold text-gray-900">Welcome Back</Text>
-        <Text className="text-gray-600 mt-2">Login to your Glamfric account</Text>
-      </View>
+    <KeyboardAwareScrollView
+      className="flex-1 bg-white"
+      contentContainerStyle={{ flexGrow: 1 }}
+      keyboardShouldPersistTaps="handled"
+      bottomOffset={40}
+    >
+      <View className="flex-1 px-6 justify-center py-8">
+        {/* Header */}
+        <View className="mb-8">
+          <Text className="text-3xl font-bold text-gray-900">Welcome Back</Text>
+          <Text className="text-gray-600 mt-2">Login to your Glamfric account</Text>
+        </View>
 
-      <View className="space-y-4">
+        {/* Form */}
         <View>
-          <Text className="text-sm font-medium text-gray-700 mb-2">Email</Text>
-          <TextInput
-            className="border border-gray-300 rounded-lg px-4 py-3 text-base"
-            placeholder="Enter your email"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            editable={!isLoading}
+          {/* Email Input */}
+          <Controller
+            control={control}
+            name="email"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <FormInput
+                label="Email"
+                placeholder="Enter your email"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                error={errors.email?.message}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoComplete="email"
+                textContentType="emailAddress"
+                returnKeyType="next"
+                onSubmitEditing={() => passwordRef.current?.focus()}
+                disabled={isLoading}
+                blurOnSubmit={false}
+              />
+            )}
           />
-        </View>
 
-        <View>
-          <Text className="text-sm font-medium text-gray-700 mb-2">Password</Text>
-          <TextInput
-            className="border border-gray-300 rounded-lg px-4 py-3 text-base"
-            placeholder="Enter your password"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-            editable={!isLoading}
+          {/* Password Input */}
+          <Controller
+            control={control}
+            name="password"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <PasswordInput
+                ref={passwordRef}
+                label="Password"
+                placeholder="Enter your password"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                error={errors.password?.message}
+                returnKeyType="done"
+                onSubmitEditing={handleSubmit(onSubmit)}
+                disabled={isLoading}
+              />
+            )}
           />
-        </View>
 
-        <TouchableOpacity
-          className="bg-red-500 rounded-lg py-4 items-center mt-6"
-          onPress={handleLogin}
-          disabled={isLoading}
-        >
-          {isLoading ? (
-            <ActivityIndicator color="#ffffff" />
-          ) : (
-            <Text className="text-white font-semibold text-base">Login</Text>
-          )}
-        </TouchableOpacity>
+          {/* Submit Button */}
+          <View className="mt-2">
+            <FormButton
+              title="Login"
+              onPress={handleSubmit(onSubmit)}
+              loading={isLoading}
+              disabled={!isValid || isLoading}
+            />
+          </View>
 
-        <View className="flex-row justify-center mt-4">
-          <Text className="text-gray-600">Don't have an account? </Text>
-          <Link href="/(auth)/signup" asChild>
-            <TouchableOpacity>
-              <Text className="text-red-500 font-semibold">Sign Up</Text>
-            </TouchableOpacity>
-          </Link>
+          {/* Sign Up Link */}
+          <View className="flex-row justify-center mt-6">
+            <Text className="text-gray-600">Don't have an account? </Text>
+            <Link href="/(auth)/signup" asChild>
+              <TouchableOpacity disabled={isLoading}>
+                <Text className="text-red-500 font-semibold">Sign Up</Text>
+              </TouchableOpacity>
+            </Link>
+          </View>
         </View>
       </View>
-    </View>
+    </KeyboardAwareScrollView>
   );
 }
