@@ -136,7 +136,7 @@ export default function LoginScreen() {
               title="Login"
               onPress={handleSubmit(onSubmit)}
               loading={isLoading}
-              disabled={!isValid && Object.keys(errors).length > 0}
+              disabled={!isValid || isLoading}
             />
           </View>
 
