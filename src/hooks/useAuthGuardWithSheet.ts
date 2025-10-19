@@ -71,7 +71,7 @@ export const useAuthGuardWithSheet = (): UseAuthGuardWithSheetReturn => {
   const router = useRouter();
   const pathname = usePathname();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const authPromptRef = useRef<AuthPromptSheetRef>(null);
+  const authPromptRef = useRef<AuthPromptSheetRef | null>(null);
 
   const requireAuth = useCallback(
     (action: () => void, options?: UseAuthGuardWithSheetOptions) => {

@@ -42,6 +42,9 @@ export const AuthGuard: React.FC<AuthGuardProps> = React.memo(({
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const onAuthRequiredRef = React.useRef(onAuthRequired);
 
+  // Track if callback has been called to prevent multiple invocations
+  const calledRef = React.useRef(false);
+
   // Keep ref in sync with latest callback
   React.useEffect(() => {
     onAuthRequiredRef.current = onAuthRequired;
@@ -49,7 +52,8 @@ export const AuthGuard: React.FC<AuthGuardProps> = React.memo(({
 
   // Fire callback once when user is not authenticated
   React.useEffect(() => {
-    if (!isAuthenticated && onAuthRequiredRef.current) {
+    if (!isAuthenticated && onAuthRequiredRef.current && !calledRef.current) {
+      calledRef.current = true;
       onAuthRequiredRef.current();
     }
   }, [isAuthenticated]);
