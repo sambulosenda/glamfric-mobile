@@ -1,0 +1,134 @@
+import React, { forwardRef, useState } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  TextInputProps,
+  TouchableOpacity,
+  NativeSyntheticEvent,
+} from 'react-native';
+import { Eye, EyeOff } from 'lucide-react-native';
+
+export interface PasswordInputProps extends Omit<TextInputProps, 'onChange' | 'secureTextEntry'> {
+  label: string;
+  error?: string;
+  onSubmitEditing?: (e: NativeSyntheticEvent<{ text: string }>) => void;
+  disabled?: boolean;
+  showStrengthIndicator?: boolean;
+  strengthScore?: number;
+  strengthLabel?: string;
+  strengthColor?: string;
+}
+
+/**
+ * PasswordInput Component
+ *
+ * A specialized password input with:
+ * - Show/hide password toggle
+ * - Optional password strength indicator
+ * - Inline error messages
+ * - Disabled state styling
+ * - Proper accessibility
+ * - Forward ref support
+ */
+export const PasswordInput = forwardRef<TextInput, PasswordInputProps>(
+  (
+    {
+      label,
+      error,
+      disabled,
+      className,
+      showStrengthIndicator = false,
+      strengthScore = 0,
+      strengthLabel = '',
+      strengthColor = '',
+      ...props
+    },
+    ref
+  ) => {
+    const [showPassword, setShowPassword] = useState(false);
+    const hasError = !!error;
+
+    const togglePasswordVisibility = () => {
+      setShowPassword((prev) => !prev);
+    };
+
+    return (
+      <View className="mb-4">
+        <Text className="text-sm font-medium text-gray-700 mb-2">
+          {label}
+        </Text>
+        <View className="relative">
+          <TextInput
+            ref={ref}
+            className={`
+              border rounded-lg px-4 py-3 pr-12 text-base
+              ${hasError ? 'border-red-500' : 'border-gray-300'}
+              ${disabled ? 'bg-gray-100 text-gray-500' : 'bg-white text-gray-900'}
+              ${className || ''}
+            `.trim()}
+            placeholderTextColor="#9CA3AF"
+            secureTextEntry={!showPassword}
+            editable={!disabled}
+            accessible
+            accessibilityLabel={label}
+            accessibilityHint={error}
+            accessibilityState={{ disabled: !!disabled }}
+            autoCapitalize="none"
+            autoCorrect={false}
+            textContentType="password"
+            {...props}
+          />
+          <TouchableOpacity
+            onPress={togglePasswordVisibility}
+            disabled={disabled}
+            className="absolute right-3 top-3.5"
+            accessible
+            accessibilityLabel={showPassword ? 'Hide password' : 'Show password'}
+            accessibilityRole="button"
+          >
+            {showPassword ? (
+              <EyeOff size={20} color={disabled ? '#9CA3AF' : '#6B7280'} />
+            ) : (
+              <Eye size={20} color={disabled ? '#9CA3AF' : '#6B7280'} />
+            )}
+          </TouchableOpacity>
+        </View>
+
+        {/* Password Strength Indicator */}
+        {showStrengthIndicator && strengthScore > 0 && !hasError && (
+          <View className="mt-2">
+            <View className="flex-row gap-1 mb-1">
+              {[1, 2, 3, 4].map((level) => (
+                <View
+                  key={level}
+                  className={`flex-1 h-1 rounded-full ${
+                    level <= strengthScore
+                      ? strengthScore === 1
+                        ? 'bg-red-500'
+                        : strengthScore === 2
+                        ? 'bg-orange-500'
+                        : strengthScore === 3
+                        ? 'bg-yellow-500'
+                        : 'bg-green-500'
+                      : 'bg-gray-200'
+                  }`}
+                />
+              ))}
+            </View>
+            <Text className={`text-xs ${strengthColor}`}>{strengthLabel}</Text>
+          </View>
+        )}
+
+        {/* Error Message */}
+        {hasError && (
+          <Text className="text-red-600 text-sm mt-1.5" accessibilityLiveRegion="polite">
+            {error}
+          </Text>
+        )}
+      </View>
+    );
+  }
+);
+
+PasswordInput.displayName = 'PasswordInput';
