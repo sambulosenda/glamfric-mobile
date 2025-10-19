@@ -16,7 +16,7 @@ import { FormButton } from '@/components/forms';
  */
 export default function VerifyTokenScreen() {
   const router = useRouter();
-  const { token } = useLocalSearchParams<{ token: string }>();
+  const { token } = useLocalSearchParams<{ token?: string }>();
   const [status, setStatus] = useState<'verifying' | 'success' | 'error'>('verifying');
   const [message, setMessage] = useState('');
 
