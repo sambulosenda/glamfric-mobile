@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
-import { Star, MapPin } from 'lucide-react-native';
+import { Star } from 'lucide-react-native';
 import type { Business } from '@/graphql/types/business';
 import { getCategoryLabel } from '@/constants/categories';
 
@@ -40,7 +40,7 @@ export const BusinessCard: React.FC<BusinessCardProps> = ({
     <TouchableOpacity
       onPress={onPress}
       activeOpacity={0.9}
-      className="bg-white rounded-xl mb-4 overflow-hidden"
+      className="bg-white dark:bg-card-dark rounded-xl mb-4 overflow-hidden"
       accessibilityRole="button"
       accessibilityLabel={`View ${business.businessName}`}
     >
@@ -49,12 +49,12 @@ export const BusinessCard: React.FC<BusinessCardProps> = ({
         {imageUrl ? (
           <Image
             source={{ uri: imageUrl }}
-            className="w-full h-[200px]"
+            className="w-full h-card-image"
             resizeMode="cover"
           />
         ) : (
-          <View className="w-full h-[200px] bg-gray-50 items-center justify-center">
-            <Text className="text-gray-400 text-sm">{categoryLabel}</Text>
+          <View className="w-full h-card-image bg-gray-50 dark:bg-dark-2 items-center justify-center">
+            <Text className="text-gray-400 dark:text-dark-3 text-sm">{categoryLabel}</Text>
           </View>
         )}
       </View>
@@ -62,13 +62,13 @@ export const BusinessCard: React.FC<BusinessCardProps> = ({
       {/* Content */}
       <View className="p-4">
         {/* Category Tag */}
-        <Text className="text-xs font-semibold text-gray-500 uppercase mb-1">
+        <Text className="text-xs font-semibold text-gray-500 dark:text-dark-3 uppercase mb-1">
           FOR {business.category === 'all' ? 'EVERYONE' : business.category.toUpperCase()}
         </Text>
 
         {/* Business Name */}
         <Text
-          className="text-lg font-semibold text-gray-900 mb-1"
+          className="text-lg font-semibold text-gray-900 dark:text-white mb-1"
           numberOfLines={1}
           ellipsizeMode="tail"
         >
@@ -76,7 +76,7 @@ export const BusinessCard: React.FC<BusinessCardProps> = ({
         </Text>
 
         {/* Services - placeholder for now */}
-        <Text className="text-sm font-normal text-gray-600 mb-2" numberOfLines={1}>
+        <Text className="text-sm font-normal text-gray-600 dark:text-dark-3 mb-2" numberOfLines={1}>
           Haircut, Spa, Massage
         </Text>
 
@@ -84,7 +84,7 @@ export const BusinessCard: React.FC<BusinessCardProps> = ({
         {rating && (
           <View className="flex-row items-center mb-2">
             <Star size={14} color="#FBBF24" fill="#FBBF24" />
-            <Text className="text-sm font-semibold text-gray-900 ml-1">
+            <Text className="text-sm font-semibold text-gray-900 dark:text-white ml-1">
               {rating}
             </Text>
           </View>
@@ -92,13 +92,13 @@ export const BusinessCard: React.FC<BusinessCardProps> = ({
 
         {/* Location • Distance • Price */}
         <View className="flex-row items-center">
-          <Text className="text-sm font-normal text-gray-600" numberOfLines={1}>
+          <Text className="text-sm font-normal text-gray-600 dark:text-dark-3" numberOfLines={1}>
             {business.city || 'Keira throughway'}
           </Text>
-          <Text className="text-sm font-normal text-gray-600 mx-1">•</Text>
-          <Text className="text-sm font-normal text-gray-600">5.0 Kms</Text>
-          <Text className="text-sm font-normal text-gray-600 mx-1">•</Text>
-          <Text className="text-sm font-normal text-gray-600">$$</Text>
+          <Text className="text-sm font-normal text-gray-600 dark:text-dark-3 mx-1">•</Text>
+          <Text className="text-sm font-normal text-gray-600 dark:text-dark-3">5.0 Kms</Text>
+          <Text className="text-sm font-normal text-gray-600 dark:text-dark-3 mx-1">•</Text>
+          <Text className="text-sm font-normal text-gray-600 dark:text-dark-3">$$</Text>
         </View>
       </View>
     </TouchableOpacity>

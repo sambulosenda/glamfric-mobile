@@ -50,16 +50,16 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   };
 
   return (
-    <View className="py-3 bg-white">
+    <View className="py-3 bg-white dark:bg-dark-0">
       <View
         className={`flex-row items-center rounded-xl px-4 py-3.5 ${
           isFocused
-            ? 'bg-white border border-gray-300 shadow-sm'
-            : 'bg-gray-50 border border-transparent'
+            ? 'bg-white dark:bg-dark-1 border border-gray-300 dark:border-dark-3 shadow-sm'
+            : 'bg-gray-50 dark:bg-dark-2 border border-transparent'
         }`}
       >
         {/* Search Icon */}
-        <Search size={15} color="#717171" style={{ marginRight: 4 }} />
+        <Search size={15} className="text-base-500 dark:text-dark-3 mr-1" />
 
         {/* Text Input */}
         <TextInput
@@ -70,13 +70,9 @@ export const SearchBar: React.FC<SearchBarProps> = ({
           placeholder={placeholder}
           placeholderTextColor="#8F90A6"
           editable={!disabled}
+          className="flex-1 font-dm-sans text-base text-dark-0 dark:text-white"
           style={{
-            flex: 1,
-            fontFamily: 'DM-Sans',
-            fontSize: 15,
-            fontWeight: '400',
             lineHeight: 22.5,
-            color: '#1C1C28', // Text color for typed content
           }}
           returnKeyType="search"
           autoCapitalize="none"
@@ -88,12 +84,12 @@ export const SearchBar: React.FC<SearchBarProps> = ({
         {value.length > 0 && (
           <TouchableOpacity
             onPress={handleClear}
-            className="ml-3 w-9 h-9 items-center justify-center rounded-full active:bg-gray-200"
+            className="ml-3 w-9 h-9 items-center justify-center rounded-full active:bg-gray-200 dark:active:bg-dark-3"
             activeOpacity={0.7}
             accessibilityLabel="Clear search"
             accessibilityRole="button"
           >
-            <X size={20} color="#717171" />
+            <X size={20} className="text-base-500 dark:text-dark-3" />
           </TouchableOpacity>
         )}
       </View>

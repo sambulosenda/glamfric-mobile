@@ -90,7 +90,7 @@ export default function HomeScreen() {
   }));
 
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1 bg-white dark:bg-dark-0">
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
@@ -98,144 +98,171 @@ export default function HomeScreen() {
           paddingBottom: insets.bottom + 80,
         }}
       >
-        {/* Location Picker */}
-        <View className="px-6">
-          <LocationPicker
-            location="Munich Center"
-            onPress={() => console.log('Open location picker')}
-          />
-        </View>
-
-        {/* Search Bar */}
-        <View className="px-6">
-          <SearchBar
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            placeholder="Shop name or service"
-          />
-        </View>
-
-        {/* Filter Chips */}
-        <FilterChips
-          filters={filters}
-          onFilterChange={(newFilters) =>
-            setFilters({ ...filters, ...newFilters })
-          }
-        />
-
-        {/* Beauty Services Section */}
-        <View className="mb-6 mt-6">
-          <View className="px-6">
-            <SectionHeader
-              title="Beauty Services"
-              onSeeAll={() => console.log('See all services')}
+        {/* Container with max width for large screens */}
+        <View className="max-w-7xl self-center w-full">
+          {/* Location Picker */}
+          <View className="px-6 md:px-8 lg:px-12">
+            <LocationPicker
+              location="Munich Center"
+              onPress={() => console.log('Open location picker')}
             />
           </View>
-          <View className="px-6">
-            <View className="flex-row justify-between mb-4">
-              {BEAUTY_SERVICES.slice(0, 3).map((service) => (
-                <ServiceCategoryCard
-                  key={service.id}
-                  image={service.image}
-                  title={service.title}
-                  onPress={() => handleServicePress(service.id)}
-                />
-              ))}
+
+          {/* Search Bar */}
+          <View className="px-6 md:px-8 lg:px-12">
+            <SearchBar
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              placeholder="Shop name or service"
+            />
+          </View>
+
+          {/* Filter Chips */}
+          <FilterChips
+            filters={filters}
+            onFilterChange={(newFilters) =>
+              setFilters({ ...filters, ...newFilters })
+            }
+          />
+
+          {/* Beauty Services Section */}
+          <View className="mb-6 mt-6">
+            <View className="px-6 md:px-8 lg:px-12">
+              <SectionHeader
+                title="Beauty Services"
+                onSeeAll={() => console.log('See all services')}
+              />
             </View>
-            <View className="flex-row justify-between">
-              {BEAUTY_SERVICES.slice(3, 6).map((service) => (
-                <ServiceCategoryCard
-                  key={service.id}
-                  image={service.image}
-                  title={service.title}
-                  onPress={() => handleServicePress(service.id)}
-                />
-              ))}
+            {/* Responsive grid: 3 cols on mobile, 6 cols on tablet */}
+            <View className="px-6 md:px-8 lg:px-12">
+              <View className="flex-row flex-wrap justify-between gap-y-4">
+                {BEAUTY_SERVICES.map((service) => (
+                  <View key={service.id} className="w-[30%] md:w-[15%]">
+                    <ServiceCategoryCard
+                      image={service.image}
+                      title={service.title}
+                      onPress={() => handleServicePress(service.id)}
+                    />
+                  </View>
+                ))}
+              </View>
             </View>
           </View>
+
+          {/* Popular Near You Section */}
+          {popularBusinesses.length > 0 && (
+            <View className="mb-6">
+              <View className="px-6 md:px-8 lg:px-12">
+                <SectionHeader
+                  title="Popular near you"
+                  onSeeAll={() => console.log('See all popular')}
+                />
+              </View>
+              {/* Horizontal scroll on mobile, grid on tablet */}
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                className="flex-row md:hidden"
+                contentContainerStyle={{ paddingLeft: 24, paddingRight: 24 }}
+              >
+                {popularBusinesses.map((business) => (
+                  <View key={business.id} className="mr-4" style={{ width: 280 }}>
+                    <BusinessCard
+                      business={business}
+                      onPress={() => handleBusinessPress(business.id)}
+                    />
+                  </View>
+                ))}
+              </ScrollView>
+              {/* Grid layout for tablet+ */}
+              <View className="hidden md:flex md:flex-row md:flex-wrap md:px-8 lg:px-12 md:gap-4">
+                {popularBusinesses.map((business) => (
+                  <View key={business.id} className="md:w-[48%] lg:w-[32%]">
+                    <BusinessCard
+                      business={business}
+                      onPress={() => handleBusinessPress(business.id)}
+                    />
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
+
+          {/* Best Offers Section */}
+          {mockOffers.length > 0 && (
+            <View className="mb-8">
+              <View className="px-6 md:px-8 lg:px-12">
+                <SectionHeader
+                  title="Best Offers"
+                  onSeeAll={() => console.log('See all offers')}
+                />
+              </View>
+              {/* Horizontal scroll on mobile, grid on tablet */}
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                className="flex-row md:hidden"
+                contentContainerStyle={{ paddingLeft: 24, paddingRight: 24 }}
+              >
+                {mockOffers.map((offer) => {
+                  const business = popularBusinesses.find(
+                    (b) => b.id === offer.businessId
+                  );
+                  if (!business) return null;
+
+                  return (
+                    <OfferCard
+                      key={offer.id}
+                      business={business}
+                      offer={offer}
+                      onPress={() => handleOfferPress(offer.id)}
+                    />
+                  );
+                })}
+              </ScrollView>
+              {/* Grid layout for tablet+ */}
+              <View className="hidden md:flex md:flex-row md:flex-wrap md:px-8 lg:px-12 md:gap-4">
+                {mockOffers.map((offer) => {
+                  const business = popularBusinesses.find(
+                    (b) => b.id === offer.businessId
+                  );
+                  if (!business) return null;
+
+                  return (
+                    <View key={offer.id} className="md:w-[48%] lg:w-[32%]">
+                      <OfferCard
+                        business={business}
+                        offer={offer}
+                        onPress={() => handleOfferPress(offer.id)}
+                      />
+                    </View>
+                  );
+                })}
+              </View>
+            </View>
+          )}
+
+          {/* Loading State */}
+          {loading && businesses.length === 0 && (
+            <View className="px-6 md:px-8 lg:px-12 py-8">
+              <Text className="text-center text-gray-600 dark:text-dark-3">Loading...</Text>
+            </View>
+          )}
+
+          {/* Error State */}
+          {error && (
+            <View className="px-6 md:px-8 lg:px-12">
+              <EmptyState type="error" message={error} />
+            </View>
+          )}
+
+          {/* Empty State */}
+          {!loading && !error && businesses.length === 0 && (
+            <View className="px-6 md:px-8 lg:px-12">
+              <EmptyState type="no-businesses" />
+            </View>
+          )}
         </View>
-
-        {/* Popular Near You Section */}
-        {popularBusinesses.length > 0 && (
-          <View className="mb-6">
-            <View className="px-6">
-              <SectionHeader
-                title="Popular near you"
-                onSeeAll={() => console.log('See all popular')}
-              />
-            </View>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              className="flex-row"
-              contentContainerStyle={{ paddingLeft: 24, paddingRight: 24 }}
-            >
-              {popularBusinesses.map((business) => (
-                <View key={business.id} className="mr-4" style={{ width: 280 }}>
-                  <BusinessCard
-                    business={business}
-                    onPress={() => handleBusinessPress(business.id)}
-                  />
-                </View>
-              ))}
-            </ScrollView>
-          </View>
-        )}
-
-        {/* Best Offers Section */}
-        {mockOffers.length > 0 && (
-          <View className="mb-8">
-            <View className="px-6">
-              <SectionHeader
-                title="Best Offers"
-                onSeeAll={() => console.log('See all offers')}
-              />
-            </View>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              className="flex-row"
-              contentContainerStyle={{ paddingLeft: 24, paddingRight: 24 }}
-            >
-              {mockOffers.map((offer) => {
-                const business = popularBusinesses.find(
-                  (b) => b.id === offer.businessId
-                );
-                if (!business) return null;
-
-                return (
-                  <OfferCard
-                    key={offer.id}
-                    business={business}
-                    offer={offer}
-                    onPress={() => handleOfferPress(offer.id)}
-                  />
-                );
-              })}
-            </ScrollView>
-          </View>
-        )}
-
-        {/* Loading State */}
-        {loading && businesses.length === 0 && (
-          <View className="px-4 py-8">
-            <Text className="text-center text-gray-600">Loading...</Text>
-          </View>
-        )}
-
-        {/* Error State */}
-        {error && (
-          <View className="px-4">
-            <EmptyState type="error" message={error} />
-          </View>
-        )}
-
-        {/* Empty State */}
-        {!loading && !error && businesses.length === 0 && (
-          <View className="px-4">
-            <EmptyState type="no-businesses" />
-          </View>
-        )}
       </ScrollView>
     </View>
   );

@@ -40,14 +40,11 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
       accessibilityLabel={`Current location: ${location}`}
       accessibilityHint="Double tap to change location"
     >
-      <MapPin size={20} color="#222222" />
-      <Text 
-        className="ml-2 text-center text-base font-bold text-dark-0 leading-6"
-        style={{ fontFamily: 'DM-Sans-Bold' }}
-      >
+      <MapPin size={20} className="text-base-900 dark:text-white" />
+      <Text className="ml-2 text-center text-base font-dm-sans-bold text-dark-0 dark:text-white leading-6">
         {location}
       </Text>
-      {onPress && <ChevronDown size={20} color="#717171" className="ml-1" />}
+      {onPress && <ChevronDown size={20} className="text-base-500 dark:text-dark-3 ml-1" />}
     </TouchableOpacity>
   );
 };

@@ -2,9 +2,46 @@
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   presets: [require("nativewind/preset")],
+  darkMode: 'class', // Enable dark mode with class strategy
+  safelist: [
+    // Safelist dynamic classes that might not be detected during build
+    {
+      pattern: /^(bg|text|border)-(brand|base|dark|system)-(0|1|2|3|50|100|200|300|400|500|600|700|800|900)$/,
+      variants: ['dark', 'hover', 'active', 'focus'],
+    },
+    {
+      pattern: /^(w|h)-(card-image|card-image-sm|card-image-lg)$/,
+    },
+    {
+      pattern: /^font-(dm-sans|dm-sans-medium|dm-sans-semibold|dm-sans-bold)$/,
+    },
+  ],
   theme: {
     extend: {
       colors: {
+        // Semantic colors for light/dark mode theming
+        background: {
+          DEFAULT: '#ffffff',
+          dark: '#1C1C28',
+          secondary: '#f9fafb',
+          'secondary-dark': '#2C2C3A',
+        },
+        foreground: {
+          DEFAULT: '#111827',
+          dark: '#f9fafb',
+          muted: '#6b7280',
+          'muted-dark': '#8F90A6',
+        },
+        border: {
+          DEFAULT: '#e5e7eb',
+          dark: '#3C3C4C',
+        },
+        card: {
+          DEFAULT: '#ffffff',
+          dark: '#2C2C3A',
+        },
+
+
         // Brand Primary (Blue/Purple)
         brand: {
           50: '#f5f3ff',   // Lightest purple/blue
@@ -113,36 +150,66 @@ module.exports = {
             900: '#7f1d1d',
           },
         },
-
-        // Legacy colors (maintaining backward compatibility)
-        primary: {
-          50: '#f5f3ff',
-          100: '#ede9fe',
-          200: '#CBBFFF',
-          300: '#9880FE',
-          400: '#6440FE',
-          500: '#3F13FE',  // Maps to brand.500
-          600: '#2C01E2',
-          700: '#2201c7',
-          800: '#1a019f',
-          900: '#120177',
-        },
-        secondary: {
-          50: '#f5f3ff',
-          100: '#ede9fe',
-          200: '#ddd6fe',
-          300: '#c4b5fd',
-          400: '#a78bfa',
-          500: '#8b5cf6',
-          600: '#7c3aed',
-          700: '#6d28d9',
-          800: '#5b21b6',
-          900: '#4c1d95',
-        },
       },
       
       fontFamily: {
         'dm-sans': ['DM-Sans'],
+        'dm-sans-medium': ['DM-Sans-Medium'],
+        'dm-sans-semibold': ['DM-Sans-SemiBold'],
+        'dm-sans-bold': ['DM-Sans-Bold'],
+      },
+
+      // Font sizes matching theme system
+      fontSize: {
+        xs: '12px',
+        sm: '14px',
+        base: '16px',
+        lg: '18px',
+        xl: '20px',
+        '2xl': '24px',
+        '3xl': '30px',
+        '4xl': '36px',
+        '5xl': '48px',
+        '6xl': '60px',
+      },
+
+      // Font weights matching theme system
+      fontWeight: {
+        light: '300',
+        normal: '400',
+        medium: '500',
+        semibold: '600',
+        bold: '700',
+        extrabold: '800',
+      },
+
+      // Border radius matching theme system
+      borderRadius: {
+        none: '0',
+        sm: '4px',
+        base: '8px',
+        md: '12px',
+        lg: '16px',
+        xl: '20px',
+        '2xl': '24px',
+        '3xl': '32px',
+        full: '9999px',
+      },
+
+      // Line heights matching theme system
+      lineHeight: {
+        tight: '1.25',
+        snug: '1.375',
+        normal: '1.5',
+        relaxed: '1.625',
+        loose: '2',
+      },
+
+      // Custom heights for common use cases
+      height: {
+        'card-image': '200px',
+        'card-image-sm': '160px',
+        'card-image-lg': '240px',
       },
     },
   },

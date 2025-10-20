@@ -1,3 +1,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    /* Light mode colors */
+    --color-background: 255 255 255;
+    --color-foreground: 17 24 39;
+    --color-background-secondary: 249 250 251;
+    --color-foreground-muted: 107 114 128;
+    --color-border: 229 231 235;
+    --color-card: 255 255 255;
+  }
+
+  .dark {
+    /* Dark mode colors */
+    --color-background: 28 28 40;
+    --color-foreground: 249 250 251;
+    --color-background-secondary: 44 44 58;
+    --color-foreground-muted: 143 144 166;
+    --color-border: 60 60 76;
+    --color-card: 44 44 58;
+  }
+}
