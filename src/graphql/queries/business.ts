@@ -106,3 +106,35 @@ export const NEARBY_BUSINESSES = gql`
     }
   }
 `;
+
+/**
+ * Get featured offers
+ * Public query - no authentication required
+ */
+export const GET_FEATURED_OFFERS = gql`
+  query GetFeaturedOffers($limit: Int) {
+    featuredOffers(limit: $limit) {
+      id
+      businessId
+      business {
+        id
+        businessName
+        slug
+        category
+        city
+        state
+        profileImageUrl
+        coverImageUrl
+        rating
+        totalReviews
+        isVerified
+      }
+      title
+      description
+      discount
+      imageUrl
+      validUntil
+      isActive
+    }
+  }
+`;
