@@ -67,7 +67,7 @@ export const BusinessCard: React.FC<BusinessCardProps> = ({
     <TouchableOpacity
       onPress={onPress}
       activeOpacity={0.9}
-      className="bg-white rounded-2xl shadow-md mb-4 overflow-hidden"
+      className="bg-white rounded-xl border border-gray-100 mb-4 overflow-hidden"
       accessibilityRole="button"
       accessibilityLabel={`View ${business.businessName}`}
     >
@@ -89,7 +89,7 @@ export const BusinessCard: React.FC<BusinessCardProps> = ({
         {onFavorite && (
           <TouchableOpacity
             onPress={handleFavoritePress}
-            className="absolute top-3 right-3 w-9 h-9 bg-white/95 rounded-full items-center justify-center shadow-md active:scale-90"
+            className="absolute top-3 right-3 w-9 h-9 bg-white/95 rounded-full items-center justify-center border border-gray-200 active:scale-90"
             activeOpacity={0.9}
             accessibilityRole="button"
             accessibilityLabel={
@@ -106,7 +106,7 @@ export const BusinessCard: React.FC<BusinessCardProps> = ({
 
         {/* Verified Badge */}
         {business.isVerified && (
-          <View className="absolute top-3 left-3 bg-white rounded-md px-2 py-1 flex-row items-center border border-sky-100 shadow-sm">
+          <View className="absolute top-3 left-3 bg-white rounded-md px-2 py-1 flex-row items-center border border-sky-100">
             <CheckCircle size={12} color="#0EA5E9" />
             <Text className="text-xs font-semibold text-sky-500 ml-1">
               Verified
