@@ -67,7 +67,7 @@ export const BusinessCard: React.FC<BusinessCardProps> = ({
     <TouchableOpacity
       onPress={onPress}
       activeOpacity={0.9}
-      className="bg-white rounded-xl border border-gray-100 mb-4 overflow-hidden"
+      className="bg-white rounded-xl mb-4 overflow-hidden"
       accessibilityRole="button"
       accessibilityLabel={`View ${business.businessName}`}
     >
@@ -89,7 +89,7 @@ export const BusinessCard: React.FC<BusinessCardProps> = ({
         {onFavorite && (
           <TouchableOpacity
             onPress={handleFavoritePress}
-            className="absolute top-3 right-3 w-9 h-9 bg-white/95 rounded-full items-center justify-center border border-gray-200 active:scale-90"
+            className="absolute top-3 right-3 w-9 h-9 bg-white/95 rounded-full items-center justify-center active:scale-90"
             activeOpacity={0.9}
             accessibilityRole="button"
             accessibilityLabel={
@@ -106,7 +106,7 @@ export const BusinessCard: React.FC<BusinessCardProps> = ({
 
         {/* Verified Badge */}
         {business.isVerified && (
-          <View className="absolute top-3 left-3 bg-white rounded-md px-2 py-1 flex-row items-center border border-sky-100">
+          <View className="absolute top-3 left-3 bg-white/95 rounded-md px-2 py-1 flex-row items-center">
             <CheckCircle size={12} color="#0EA5E9" />
             <Text className="text-xs font-semibold text-sky-500 ml-1">
               Verified
@@ -117,48 +117,45 @@ export const BusinessCard: React.FC<BusinessCardProps> = ({
 
       {/* Content */}
       <View className="p-4">
+        {/* Category Tag */}
+        <Text className="text-xs font-semibold text-gray-500 uppercase mb-1">
+          FOR {business.category === 'all' ? 'EVERYONE' : business.category.toUpperCase()}
+        </Text>
+
         {/* Business Name */}
         <Text
-          className="text-lg font-semibold text-gray-900 mb-1 tracking-tight"
+          className="text-lg font-semibold text-gray-900 mb-1"
           numberOfLines={1}
           ellipsizeMode="tail"
         >
           {business.businessName}
         </Text>
 
-        {/* Category */}
-        <Text className="text-sm font-normal text-gray-600 mb-2">
-          {categoryLabel}
+        {/* Services - placeholder for now */}
+        <Text className="text-sm font-normal text-gray-600 mb-2" numberOfLines={1}>
+          Haircut, Spa, Massage
         </Text>
 
-        {/* Rating & Reviews */}
+        {/* Rating */}
         {rating && (
           <View className="flex-row items-center mb-2">
             <Star size={14} color="#FBBF24" fill="#FBBF24" />
             <Text className="text-sm font-semibold text-gray-900 ml-1">
               {rating}
             </Text>
-            {business.totalReviews > 0 && (
-              <Text className="text-sm font-normal text-gray-600 ml-1">
-                ({business.totalReviews})
-              </Text>
-            )}
           </View>
         )}
 
-        {/* Location */}
-        {business.city && (
-          <View className="flex-row items-center">
-            <MapPin size={14} color="#717171" />
-            <Text
-              className="text-sm font-normal text-gray-600 ml-1 flex-1"
-              numberOfLines={1}
-            >
-              {business.city}
-              {business.state ? `, ${business.state}` : ''}
-            </Text>
-          </View>
-        )}
+        {/* Location • Distance • Price */}
+        <View className="flex-row items-center">
+          <Text className="text-sm font-normal text-gray-600" numberOfLines={1}>
+            {business.city || 'Keira throughway'}
+          </Text>
+          <Text className="text-sm font-normal text-gray-600 mx-1">•</Text>
+          <Text className="text-sm font-normal text-gray-600">5.0 Kms</Text>
+          <Text className="text-sm font-normal text-gray-600 mx-1">•</Text>
+          <Text className="text-sm font-normal text-gray-600">$$</Text>
+        </View>
       </View>
     </TouchableOpacity>
   );
