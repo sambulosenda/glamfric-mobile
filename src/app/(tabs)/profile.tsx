@@ -1,5 +1,6 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 import { User } from 'lucide-react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuthStore } from '@/store';
 import { useRouter } from 'expo-router';
 import { AuthGuard, LoginPrompt } from '@/components/auth';
@@ -14,6 +15,7 @@ function ProfileContent() {
   const user = useAuthStore((state) => state.user);
   const logout = useAuthStore((state) => state.logout);
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   const handleLogout = async () => {
     await logout();
@@ -22,7 +24,13 @@ function ProfileContent() {
   };
 
   return (
-    <View className="flex-1 bg-white p-6">
+    <View
+      className="flex-1 bg-white p-6"
+      style={{
+        paddingTop: insets.top + 24, // 24 is p-6 value
+        paddingBottom: insets.bottom + 24,
+      }}
+    >
       <View className="items-center justify-center flex-1">
         <Text className="text-2xl font-bold text-gray-900">Profile</Text>
         {user && (
@@ -47,14 +55,24 @@ function ProfileContent() {
 }
 
 export default function ProfileScreen() {
+  const insets = useSafeAreaInsets();
+
   return (
     <AuthGuard
       fallback={
-        <LoginPrompt
-          title="Your Profile"
-          message="Sign in to view and manage your account"
-          icon={<User size={32} color="#6B7280" />}
-        />
+        <View
+          style={{
+            paddingTop: insets.top,
+            paddingBottom: insets.bottom,
+            flex: 1,
+          }}
+        >
+          <LoginPrompt
+            title="Your Profile"
+            message="Sign in to view and manage your account"
+            icon={<User size={32} color="#6B7280" />}
+          />
+        </View>
       }
     >
       <ProfileContent />

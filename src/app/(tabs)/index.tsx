@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, FlatList } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useBusinessSearch } from '@/hooks';
 import {
   SearchBar,
@@ -25,6 +26,7 @@ import {
  */
 export default function DiscoverScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   // Search hook with debouncing and pagination
   const {
@@ -56,15 +58,17 @@ export default function DiscoverScreen() {
   if (loading && businesses.length === 0) {
     return (
       <View className="flex-1 bg-gray-50">
-        <SearchBar
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-          disabled={true}
-        />
-        <CategoryFilter
-          selectedCategory={selectedCategory}
-          onSelectCategory={setSelectedCategory}
-        />
+        <View style={{ paddingTop: insets.top }}>
+          <SearchBar
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            disabled={true}
+          />
+          <CategoryFilter
+            selectedCategory={selectedCategory}
+            onSelectCategory={setSelectedCategory}
+          />
+        </View>
         <View className="flex-1 px-4 pt-4">
           <BusinessSkeletonList count={3} />
         </View>
@@ -76,11 +80,13 @@ export default function DiscoverScreen() {
   if (error) {
     return (
       <View className="flex-1 bg-gray-50">
-        <SearchBar value={searchQuery} onChangeText={setSearchQuery} />
-        <CategoryFilter
-          selectedCategory={selectedCategory}
-          onSelectCategory={setSelectedCategory}
-        />
+        <View style={{ paddingTop: insets.top }}>
+          <SearchBar value={searchQuery} onChangeText={setSearchQuery} />
+          <CategoryFilter
+            selectedCategory={selectedCategory}
+            onSelectCategory={setSelectedCategory}
+          />
+        </View>
         <EmptyState type="error" message={error} />
       </View>
     );
@@ -90,11 +96,13 @@ export default function DiscoverScreen() {
   if (businesses.length === 0) {
     return (
       <View className="flex-1 bg-gray-50">
-        <SearchBar value={searchQuery} onChangeText={setSearchQuery} />
-        <CategoryFilter
-          selectedCategory={selectedCategory}
-          onSelectCategory={setSelectedCategory}
-        />
+        <View style={{ paddingTop: insets.top }}>
+          <SearchBar value={searchQuery} onChangeText={setSearchQuery} />
+          <CategoryFilter
+            selectedCategory={selectedCategory}
+            onSelectCategory={setSelectedCategory}
+          />
+        </View>
         <EmptyState
           type={searchQuery || selectedCategory !== 'all' ? 'no-results' : 'no-businesses'}
         />
@@ -124,7 +132,12 @@ export default function DiscoverScreen() {
             />
           </>
         }
-        contentContainerClassName="px-4 pt-4 pb-20"
+        contentContainerStyle={{
+          paddingTop: insets.top,
+          paddingLeft: 16,
+          paddingRight: 16,
+          paddingBottom: insets.bottom + 80, // 80 for tab bar height
+        }}
         onEndReached={() => {
           if (hasMore && !loading) {
             loadMore();
