@@ -47,13 +47,12 @@ export const ServiceCategoryCard: React.FC<ServiceCategoryCardProps> = ({
       accessibilityLabel={`Browse ${title}`}
     >
       {/* Circular Image */}
-      <View className="w-[120px] h-[120px] rounded-full overflow-hidden mb-3 shadow-md">
+      <View className="w-[120px] h-[120px] rounded-full overflow-hidden mb-3 shadow-md bg-gray-100">
         <Image
           source={{ uri: image }}
           style={{ width: 120, height: 120 }}
           contentFit="cover"
           transition={200}
-          placeholder={require('@/assets/images/placeholder.png')}
         />
       </View>
 
