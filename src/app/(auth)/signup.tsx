@@ -4,6 +4,7 @@ import { useRouter, Link } from 'expo-router';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuthStore } from '@/store';
 import { signupSchema, SignupFormData, getPasswordStrength } from '@/features/auth/validation';
 import { FormInput, PasswordInput, FormButton } from '@/components/forms';
@@ -25,6 +26,7 @@ import { FormInput, PasswordInput, FormButton } from '@/components/forms';
  */
 export default function SignupScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const signup = useAuthStore((state) => state.signup);
   const isLoading = useAuthStore((state) => state.isLoading);
 
@@ -102,7 +104,11 @@ export default function SignupScreen() {
   return (
     <KeyboardAwareScrollView
       className="flex-1 bg-white"
-      contentContainerStyle={{ flexGrow: 1 }}
+      contentContainerStyle={{
+        flexGrow: 1,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+      }}
       keyboardShouldPersistTaps="handled"
       bottomOffset={40}
     >
@@ -222,10 +228,10 @@ export default function SignupScreen() {
 
           {/* Login Link */}
           <View className="flex-row justify-center mt-6">
-            <Text className="text-gray-600">Already have an account? </Text>
+            <Text className="text-base-600">Already have an account? </Text>
             <Link href="/(auth)/login" asChild>
               <TouchableOpacity disabled={isLoading}>
-                <Text className="text-red-500 font-semibold">Login</Text>
+                <Text className="text-brand-500 font-semibold">Login</Text>
               </TouchableOpacity>
             </Link>
           </View>

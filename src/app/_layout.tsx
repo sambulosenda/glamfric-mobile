@@ -4,7 +4,13 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { StorageProvider } from '@/providers/StorageProvider';
 import { apolloClient } from '@/graphql/client';
+import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
 import '../../global.css';
+
+// Keep the splash screen visible while we fetch resources
+SplashScreen.preventAutoHideAsync();
 
 /**
  * Root Layout
@@ -14,6 +20,23 @@ import '../../global.css';
  * This reduces component tree depth and eliminates unnecessary re-renders.
  */
 export default function RootLayout() {
+  const [fontsLoaded] = useFonts({
+    'DM-Sans': require('../../assets/fonts/DMSans-Regular.ttf'),
+    'DM-Sans-Bold': require('../../assets/fonts/DMSans-Bold.ttf'),
+    'DM-Sans-Medium': require('../../assets/fonts/DMSans-Medium.ttf'),
+    'DM-Sans-SemiBold': require('../../assets/fonts/DMSans-SemiBold.ttf'),
+  });
+
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
     <SafeAreaProvider>
       <KeyboardProvider>

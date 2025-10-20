@@ -238,12 +238,14 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: '700',
+    fontFamily: 'DM-Sans',
     color: '#111827',
     textAlign: 'center',
     marginBottom: 12,
   },
   message: {
     fontSize: 16,
+    fontFamily: 'DM-Sans',
     color: '#6B7280',
     textAlign: 'center',
     marginBottom: 32,
@@ -263,6 +265,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: '600',
+    fontFamily: 'DM-Sans',
   },
   secondaryButton: {
     backgroundColor: 'white',
@@ -277,6 +280,7 @@ const styles = StyleSheet.create({
     color: '#111827',
     fontSize: 16,
     fontWeight: '600',
+    fontFamily: 'DM-Sans',
   },
   cancelButton: {
     paddingVertical: 12,
@@ -286,5 +290,6 @@ const styles = StyleSheet.create({
     color: '#6B7280',
     fontSize: 16,
     fontWeight: '500',
+    fontFamily: 'DM-Sans',
   },
 });

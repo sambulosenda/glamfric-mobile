@@ -8,6 +8,7 @@ import {
   NativeSyntheticEvent,
 } from 'react-native';
 import { Eye, EyeOff } from 'lucide-react-native';
+import { getInputStyles } from '@/theme';
 
 export interface PasswordInputProps extends Omit<TextInputProps, 'onChange' | 'secureTextEntry'> {
   label: string;
@@ -38,20 +39,35 @@ export const PasswordInput = forwardRef<TextInput, PasswordInputProps>(
     {
       label,
       error,
-      disabled,
-      className,
+      disabled = false,
       showStrengthIndicator = false,
       strengthScore = 0,
       strengthLabel = '',
       strengthColor = '',
       showRequirements = false,
       password = '',
+      onFocus,
+      onBlur,
       ...props
     },
     ref
   ) => {
     const [showPassword, setShowPassword] = useState(false);
+    const [focused, setFocused] = useState(false);
     const hasError = !!error;
+
+    // Get computed styles from enhanced universal theme
+    const styles = getInputStyles({ hasError, disabled, focused });
+    
+    const handleFocus = (e: any) => {
+      setFocused(true);
+      onFocus?.(e);
+    };
+    
+    const handleBlur = (e: any) => {
+      setFocused(false);
+      onBlur?.(e);
+    };
 
     const togglePasswordVisibility = () => {
       setShowPassword((prev) => !prev);
@@ -71,32 +87,41 @@ export const PasswordInput = forwardRef<TextInput, PasswordInputProps>(
     const requirements = showRequirements && password ? getPasswordRequirements() : null;
 
     return (
-      <View className="mb-4">
-        <Text className="text-sm font-medium text-gray-700 mb-2">
+      <View 
+        className="flex flex-col items-start self-stretch"
+        style={styles.container}
+      >
+        {/* Label */}
+        <Text style={styles.label}>
           {label}
         </Text>
-        <View className="relative">
+        
+        {/* Input Container with Eye Icon */}
+        <View className="relative self-stretch">
           <TextInput
             ref={ref}
-            className={`
-              border rounded-lg px-4 py-3 pr-12 text-base
-              ${hasError ? 'border-red-500' : 'border-gray-300'}
-              ${disabled ? 'bg-gray-100 text-gray-500' : 'bg-white text-gray-900'}
-              ${className || ''}
-            `.trim()}
-            placeholderTextColor="#9CA3AF"
-            textAlignVertical="center"
+            className="self-stretch"
+            style={{
+              ...styles.input,
+              paddingRight: 48, // Space for eye icon
+            }}
+            placeholderTextColor={styles.placeholderTextColor}
             secureTextEntry={!showPassword}
             editable={!disabled}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            textAlignVertical="center"
             accessible
             accessibilityLabel={label}
             accessibilityHint={error}
-            accessibilityState={{ disabled: !!disabled }}
+            accessibilityState={{ disabled }}
             autoCapitalize="none"
             autoCorrect={false}
             textContentType="password"
             {...props}
           />
+          
+          {/* Show/Hide Password Toggle */}
           <TouchableOpacity
             onPress={togglePasswordVisibility}
             disabled={disabled}
@@ -106,9 +131,9 @@ export const PasswordInput = forwardRef<TextInput, PasswordInputProps>(
             accessibilityRole="button"
           >
             {showPassword ? (
-              <EyeOff size={20} color={disabled ? '#9CA3AF' : '#6B7280'} />
+              <EyeOff size={20} color={disabled ? '#9ca3af' : '#6b7280'} />
             ) : (
-              <Eye size={20} color={disabled ? '#9CA3AF' : '#6B7280'} />
+              <Eye size={20} color={disabled ? '#9ca3af' : '#6b7280'} />
             )}
           </TouchableOpacity>
         </View>
@@ -161,7 +186,7 @@ export const PasswordInput = forwardRef<TextInput, PasswordInputProps>(
 
         {/* Error Message */}
         {hasError && (
-          <Text className="text-red-600 text-sm mt-1.5" accessibilityLiveRegion="polite">
+          <Text style={styles.error} accessibilityLiveRegion="polite">
             {error}
           </Text>
         )}

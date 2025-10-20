@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+.expo/
+.expo-shared/
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Native builds
+ios/
+android/
+
+# Cache
+.cache/
+*.log
+
+# Config files that shouldn't be formatted
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Generated files
+.expo/
+.bundle/
+*.tsbuildinfo

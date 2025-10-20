@@ -14,3 +14,6 @@ export type {
 } from './useAuthGuardWithSheet';
 
 export { usePostAuthRedirect } from './usePostAuthRedirect';
+
+export { useBusinessSearch } from './useBusinessSearch';
+export type { UseBusinessSearchOptions, UseBusinessSearchReturn } from './useBusinessSearch';
