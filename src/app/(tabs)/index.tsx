@@ -132,7 +132,7 @@ export default function HomeScreen() {
 
         {/* Popular Near You Section */}
         {popularBusinesses.length > 0 && (
-          <View className="mb-8">
+          <View className="mb-6">
             <SectionHeader
               title="Popular near you"
               onSeeAll={() => console.log('See all popular')}
