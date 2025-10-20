@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity } from 'react-native';
 import { Search, X } from 'lucide-react-native';
 
@@ -27,8 +27,8 @@ export interface SearchBarProps {
 /**
  * SearchBar Component
  *
- * Search input with icon and clear button.
- * Designed for business search functionality.
+ * Airbnb-inspired search input with clean design, focus states, and clear button.
+ * Features generous rounding, soft colors, and smooth transitions.
  *
  * @example
  * <SearchBar
@@ -43,40 +43,50 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   placeholder = 'Search for salons, services...',
   disabled = false,
 }) => {
+  const [isFocused, setIsFocused] = useState(false);
+
   const handleClear = () => {
     onChangeText('');
   };
 
   return (
-    <View className="px-4 py-3 bg-white border-b border-gray-200">
-      <View className="flex-row items-center bg-gray-100 rounded-lg px-3 py-2.5">
+    <View className="px-4 py-3 bg-white">
+      <View
+        className={`flex-row items-center rounded-xl px-4 py-3.5 ${
+          isFocused
+            ? 'bg-white border border-gray-300 shadow-sm'
+            : 'bg-gray-50 border border-transparent'
+        }`}
+      >
         {/* Search Icon */}
-        <Search size={20} color="#9CA3AF" className="mr-2" />
+        <Search size={22} color="#717171" className="mr-3" />
 
         {/* Text Input */}
         <TextInput
           value={value}
           onChangeText={onChangeText}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
           placeholder={placeholder}
-          placeholderTextColor="#9CA3AF"
+          placeholderTextColor="#B0B0B0"
           editable={!disabled}
-          className="flex-1 text-base text-gray-900"
+          className="flex-1 text-base text-gray-900 font-normal"
           returnKeyType="search"
           autoCapitalize="none"
           autoCorrect={false}
-          clearButtonMode="never" // We have custom clear button
+          clearButtonMode="never"
         />
 
         {/* Clear Button */}
         {value.length > 0 && (
           <TouchableOpacity
             onPress={handleClear}
-            className="ml-2 p-1"
-            activeOpacity={0.6}
+            className="ml-3 w-9 h-9 items-center justify-center rounded-full active:bg-gray-200"
+            activeOpacity={0.7}
             accessibilityLabel="Clear search"
             accessibilityRole="button"
           >
-            <X size={18} color="#6B7280" />
+            <X size={20} color="#717171" />
           </TouchableOpacity>
         )}
       </View>

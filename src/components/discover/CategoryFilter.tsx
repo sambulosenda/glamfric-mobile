@@ -17,7 +17,8 @@ export interface CategoryFilterProps {
 /**
  * CategoryFilter Component
  *
- * Horizontal scrollable list of category chips for filtering businesses.
+ * Airbnb-inspired horizontal scrollable category chips.
+ * Features full pill shapes, subtle borders, and elegant selected states.
  *
  * @example
  * <CategoryFilter
@@ -30,36 +31,39 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   onSelectCategory,
 }) => {
   return (
-    <View className="bg-white border-b border-gray-200 py-3">
+    <View className="bg-white py-4 shadow-sm">
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerClassName="px-4"
         className="flex-row"
       >
-        {BUSINESS_CATEGORIES.map((category, index) => {
+        {BUSINESS_CATEGORIES.map((category) => {
           const isSelected = selectedCategory === category.value;
 
           return (
             <TouchableOpacity
               key={category.value}
               onPress={() => onSelectCategory(category.value)}
-              className={`
-                flex-row items-center px-4 py-2 rounded-full mr-2
-                ${isSelected ? 'bg-red-500' : 'bg-gray-100'}
-              `}
+              className={`flex-row items-center px-5 py-2.5 rounded-full mr-2.5 ${
+                isSelected
+                  ? 'bg-gray-900 shadow-sm'
+                  : 'bg-white border-[1.5px] border-gray-300'
+              }`}
               activeOpacity={0.7}
               accessibilityRole="button"
               accessibilityLabel={`Filter by ${category.label}`}
               accessibilityState={{ selected: isSelected }}
             >
               {/* Emoji Icon */}
-              <Text className="text-base mr-1.5">{category.icon}</Text>
+              <Text className="text-lg mr-2">{category.icon}</Text>
 
               {/* Label */}
               <Text
-                className={`text-sm font-medium ${
-                  isSelected ? 'text-white' : 'text-gray-700'
+                className={`text-[15px] ${
+                  isSelected
+                    ? 'font-semibold text-white'
+                    : 'font-medium text-gray-700'
                 }`}
               >
                 {category.label}

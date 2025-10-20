@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
-import { Heart, Star, MapPin } from 'lucide-react-native';
+import { Heart, Star, MapPin, CheckCircle } from 'lucide-react-native';
 import type { Business } from '@/graphql/types/business';
 import { getCategoryLabel } from '@/constants/categories';
 import { useAuthGuard } from '@/hooks';
@@ -30,8 +30,8 @@ export interface BusinessCardProps {
 /**
  * BusinessCard Component
  *
- * Displays a business in a card format with image, name, rating, and actions.
- * Used in the Discover screen business grid/list.
+ * Airbnb-inspired business card with premium image presentation,
+ * clean typography, and refined interactions.
  *
  * @example
  * <BusinessCard
@@ -52,7 +52,6 @@ export const BusinessCard: React.FC<BusinessCardProps> = ({
   const handleFavoritePress = () => {
     if (!onFavorite) return;
 
-    // Require auth for favorites - guests will see login prompt
     requireAuth(() => {
       onFavorite();
     }, {
@@ -67,8 +66,8 @@ export const BusinessCard: React.FC<BusinessCardProps> = ({
   return (
     <TouchableOpacity
       onPress={onPress}
-      activeOpacity={0.8}
-      className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 mb-3"
+      activeOpacity={0.9}
+      className="bg-white rounded-2xl shadow-md mb-4 overflow-hidden"
       accessibilityRole="button"
       accessibilityLabel={`View ${business.businessName}`}
     >
@@ -77,34 +76,41 @@ export const BusinessCard: React.FC<BusinessCardProps> = ({
         {imageUrl ? (
           <Image
             source={{ uri: imageUrl }}
-            className="w-full h-48"
+            className="w-full h-[200px]"
             resizeMode="cover"
           />
         ) : (
-          <View className="w-full h-48 bg-gray-200 items-center justify-center">
+          <View className="w-full h-[200px] bg-gray-50 items-center justify-center">
             <Text className="text-gray-400 text-sm">{categoryLabel}</Text>
           </View>
         )}
 
         {/* Favorite Button */}
-        <TouchableOpacity
-          onPress={handleFavoritePress}
-          className="absolute top-3 right-3 bg-white rounded-full p-2 shadow-md"
-          activeOpacity={0.7}
-          accessibilityRole="button"
-          accessibilityLabel={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
-        >
-          <Heart
-            size={20}
-            color={isFavorited ? '#EF4444' : '#6B7280'}
-            fill={isFavorited ? '#EF4444' : 'none'}
-          />
-        </TouchableOpacity>
+        {onFavorite && (
+          <TouchableOpacity
+            onPress={handleFavoritePress}
+            className="absolute top-3 right-3 w-9 h-9 bg-white/95 rounded-full items-center justify-center shadow-md active:scale-90"
+            activeOpacity={0.9}
+            accessibilityRole="button"
+            accessibilityLabel={
+              isFavorited ? 'Remove from favorites' : 'Add to favorites'
+            }
+          >
+            <Heart
+              size={20}
+              color={isFavorited ? '#EF4444' : '#484848'}
+              fill={isFavorited ? '#EF4444' : 'none'}
+            />
+          </TouchableOpacity>
+        )}
 
         {/* Verified Badge */}
         {business.isVerified && (
-          <View className="absolute top-3 left-3 bg-blue-500 rounded-full px-2 py-1">
-            <Text className="text-white text-xs font-semibold">✓ Verified</Text>
+          <View className="absolute top-3 left-3 bg-white rounded-md px-2 py-1 flex-row items-center border border-sky-100 shadow-sm">
+            <CheckCircle size={12} color="#0EA5E9" />
+            <Text className="text-xs font-semibold text-sky-500 ml-1">
+              Verified
+            </Text>
           </View>
         )}
       </View>
@@ -113,7 +119,7 @@ export const BusinessCard: React.FC<BusinessCardProps> = ({
       <View className="p-4">
         {/* Business Name */}
         <Text
-          className="text-lg font-bold text-gray-900 mb-1"
+          className="text-lg font-semibold text-gray-900 mb-1 tracking-tight"
           numberOfLines={1}
           ellipsizeMode="tail"
         >
@@ -121,17 +127,19 @@ export const BusinessCard: React.FC<BusinessCardProps> = ({
         </Text>
 
         {/* Category */}
-        <Text className="text-sm text-gray-600 mb-2">{categoryLabel}</Text>
+        <Text className="text-sm font-normal text-gray-600 mb-2">
+          {categoryLabel}
+        </Text>
 
         {/* Rating & Reviews */}
         {rating && (
           <View className="flex-row items-center mb-2">
-            <Star size={16} color="#FBBF24" fill="#FBBF24" />
+            <Star size={14} color="#FBBF24" fill="#FBBF24" />
             <Text className="text-sm font-semibold text-gray-900 ml-1">
               {rating}
             </Text>
             {business.totalReviews > 0 && (
-              <Text className="text-sm text-gray-600 ml-1">
+              <Text className="text-sm font-normal text-gray-600 ml-1">
                 ({business.totalReviews})
               </Text>
             )}
@@ -141,9 +149,13 @@ export const BusinessCard: React.FC<BusinessCardProps> = ({
         {/* Location */}
         {business.city && (
           <View className="flex-row items-center">
-            <MapPin size={14} color="#6B7280" />
-            <Text className="text-sm text-gray-600 ml-1" numberOfLines={1}>
-              {business.city}{business.state ? `, ${business.state}` : ''}
+            <MapPin size={14} color="#717171" />
+            <Text
+              className="text-sm font-normal text-gray-600 ml-1 flex-1"
+              numberOfLines={1}
+            >
+              {business.city}
+              {business.state ? `, ${business.state}` : ''}
             </Text>
           </View>
         )}

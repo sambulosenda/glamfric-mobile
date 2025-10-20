@@ -1,54 +1,71 @@
 import React from 'react';
-import { View, Text } from 'react-native';
-import { Search, Store } from 'lucide-react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { Search, Store, AlertCircle, WifiOff } from 'lucide-react-native';
 
 export interface EmptyStateProps {
   /**
    * Type of empty state to display
    */
-  type?: 'no-results' | 'no-businesses' | 'error';
+  type?: 'no-results' | 'no-businesses' | 'error' | 'no-connection';
 
   /**
    * Optional custom message
    */
   message?: string;
+
+  /**
+   * Optional retry callback for error states
+   */
+  onRetry?: () => void;
 }
 
 /**
  * EmptyState Component
  *
- * Displays friendly empty states when no businesses are found.
+ * Airbnb-inspired empty states with friendly messaging,
+ * large icons, and soft colors.
  *
  * @example
  * <EmptyState type="no-results" />
+ * <EmptyState type="error" onRetry={handleRetry} />
  */
 export const EmptyState: React.FC<EmptyStateProps> = ({
   type = 'no-results',
   message,
+  onRetry,
 }) => {
   const getContent = () => {
     switch (type) {
       case 'no-results':
         return {
-          icon: <Search size={48} color="#9CA3AF" />,
-          title: 'No businesses found',
-          description: message || 'Try adjusting your search or filter criteria',
+          icon: <Search size={64} color="#DDDDDD" />,
+          title: 'No matches found',
+          description:
+            message || 'Try adjusting your search or explore different categories',
         };
       case 'no-businesses':
         return {
-          icon: <Store size={48} color="#9CA3AF" />,
+          icon: <Store size={64} color="#DDDDDD" />,
           title: 'No businesses yet',
-          description: message || 'Check back soon for new businesses in your area',
+          description:
+            message || "We're always adding new businesses. Check back soon!",
+        };
+      case 'no-connection':
+        return {
+          icon: <WifiOff size={64} color="#DDDDDD" />,
+          title: 'No internet connection',
+          description: message || 'Check your connection and try again',
         };
       case 'error':
         return {
-          icon: <Text className="text-5xl">⚠️</Text>,
+          icon: <AlertCircle size={64} color="#DDDDDD" />,
           title: 'Something went wrong',
-          description: message || 'Unable to load businesses. Please try again.',
+          description:
+            message || "We couldn't load businesses right now. Please try again.",
         };
       default:
         return {
-          icon: <Search size={48} color="#9CA3AF" />,
+          icon: <Search size={64} color="#DDDDDD" />,
           title: 'No results',
           description: message || 'Try a different search',
         };
@@ -56,21 +73,37 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   };
 
   const content = getContent();
+  const showRetryButton = (type === 'error' || type === 'no-connection') && onRetry;
 
   return (
-    <View className="flex-1 items-center justify-center px-8 py-16">
-      {/* Icon */}
-      <View className="mb-4">{content.icon}</View>
+    <View className="flex-1 items-center justify-center px-8 py-16 bg-white">
+      {/* Icon with circular background */}
+      <View className="w-[120px] h-[120px] rounded-full bg-gray-50 items-center justify-center mb-6">
+        {content.icon}
+      </View>
 
       {/* Title */}
-      <Text className="text-xl font-bold text-gray-900 mb-2 text-center">
+      <Text className="text-2xl font-semibold text-gray-700 mb-3 text-center max-w-[320px]">
         {content.title}
       </Text>
 
       {/* Description */}
-      <Text className="text-base text-gray-600 text-center">
+      <Text className="text-base font-normal text-gray-600 leading-6 text-center max-w-[300px]">
         {content.description}
       </Text>
+
+      {/* Optional Retry Button */}
+      {showRetryButton && (
+        <TouchableOpacity
+          onPress={onRetry}
+          className="mt-6 px-6 py-3 bg-white border-[1.5px] border-gray-300 rounded-xl active:bg-gray-50"
+          activeOpacity={0.7}
+          accessibilityRole="button"
+          accessibilityLabel="Retry loading"
+        >
+          <Text className="text-base font-medium text-gray-900">Try Again</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
