@@ -1,9 +1,8 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
-import { Heart, Star, MapPin, CheckCircle } from 'lucide-react-native';
+import { Star, MapPin } from 'lucide-react-native';
 import type { Business } from '@/graphql/types/business';
 import { getCategoryLabel } from '@/constants/categories';
-import { useAuthGuard } from '@/hooks';
 
 export interface BusinessCardProps {
   /**
@@ -15,50 +14,24 @@ export interface BusinessCardProps {
    * Callback when card is pressed
    */
   onPress: () => void;
-
-  /**
-   * Callback when favorite button is pressed
-   */
-  onFavorite?: () => void;
-
-  /**
-   * Whether this business is favorited
-   */
-  isFavorited?: boolean;
 }
 
 /**
  * BusinessCard Component
  *
- * Airbnb-inspired business card with premium image presentation,
- * clean typography, and refined interactions.
+ * Clean business card with image, category, name, services, rating, and location.
+ * Minimal design matching the app's aesthetic.
  *
  * @example
  * <BusinessCard
  *   business={businessData}
  *   onPress={() => router.push(`/business/${businessData.id}`)}
- *   onFavorite={handleFavorite}
- *   isFavorited={false}
  * />
  */
 export const BusinessCard: React.FC<BusinessCardProps> = ({
   business,
   onPress,
-  onFavorite,
-  isFavorited = false,
 }) => {
-  const { requireAuth } = useAuthGuard();
-
-  const handleFavoritePress = () => {
-    if (!onFavorite) return;
-
-    requireAuth(() => {
-      onFavorite();
-    }, {
-      message: 'Sign in to save your favorite businesses',
-    });
-  };
-
   const imageUrl = business.profileImageUrl || business.coverImageUrl;
   const rating = business.rating ? Number(business.rating).toFixed(1) : null;
   const categoryLabel = getCategoryLabel(business.category);
@@ -82,35 +55,6 @@ export const BusinessCard: React.FC<BusinessCardProps> = ({
         ) : (
           <View className="w-full h-[200px] bg-gray-50 items-center justify-center">
             <Text className="text-gray-400 text-sm">{categoryLabel}</Text>
-          </View>
-        )}
-
-        {/* Favorite Button */}
-        {onFavorite && (
-          <TouchableOpacity
-            onPress={handleFavoritePress}
-            className="absolute top-3 right-3 w-9 h-9 bg-white/95 rounded-full items-center justify-center active:scale-90"
-            activeOpacity={0.9}
-            accessibilityRole="button"
-            accessibilityLabel={
-              isFavorited ? 'Remove from favorites' : 'Add to favorites'
-            }
-          >
-            <Heart
-              size={20}
-              color={isFavorited ? '#EF4444' : '#484848'}
-              fill={isFavorited ? '#EF4444' : 'none'}
-            />
-          </TouchableOpacity>
-        )}
-
-        {/* Verified Badge */}
-        {business.isVerified && (
-          <View className="absolute top-3 left-3 bg-white/95 rounded-md px-2 py-1 flex-row items-center">
-            <CheckCircle size={12} color="#0EA5E9" />
-            <Text className="text-xs font-semibold text-sky-500 ml-1">
-              Verified
-            </Text>
           </View>
         )}
       </View>

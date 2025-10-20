@@ -148,8 +148,6 @@ export default function HomeScreen() {
                   <BusinessCard
                     business={business}
                     onPress={() => handleBusinessPress(business.id)}
-                    onFavorite={() => console.log('Favorite:', business.id)}
-                    isFavorited={false}
                   />
                 </View>
               ))}
