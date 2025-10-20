@@ -18,6 +18,14 @@ module.exports = {
           800: '#1a019f',  // Very dark purple
           900: '#120177',  // Darkest purple
         },
+
+        // Dark colors from Figma
+        dark: {
+          0: '#1C1C28',    // Dark-Dark-0
+          1: '#2C2C3A',    // Dark-Dark-1
+          2: '#3C3C4C',    // Dark-Dark-2
+          3: '#8F90A6',    // Dark-Dark-3
+        },
         
         // Base/Neutral Colors (Grays)
         base: {
@@ -131,6 +139,10 @@ module.exports = {
           800: '#5b21b6',
           900: '#4c1d95',
         },
+      },
+      
+      fontFamily: {
+        'dm-sans': ['DM-Sans'],
       },
     },
   },

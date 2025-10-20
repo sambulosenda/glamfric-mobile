@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, ScrollView, Text } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -44,10 +44,22 @@ export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState('');
 
   // Search hook with filters
-  const { businesses, loading, error } = useBusinessSearch({
+  const { businesses, loading, error, setSearchQuery: updateSearchQuery, setSelectedCategory } = useBusinessSearch({
+    initialQuery: searchQuery,
+    initialCategory: filters.gender !== 'all' ? filters.gender : undefined,
     limit: 20,
     debounceMs: 300,
   });
+
+  // Sync component state with hook state
+  useEffect(() => {
+    updateSearchQuery(searchQuery);
+  }, [searchQuery, updateSearchQuery]);
+
+  useEffect(() => {
+    const category = filters.gender !== 'all' ? filters.gender : undefined;
+    setSelectedCategory(category);
+  }, [filters.gender, setSelectedCategory]);
 
   const handleBusinessPress = (businessId: string) => {
     router.push(`/business/${businessId}` as any);
@@ -87,17 +99,21 @@ export default function HomeScreen() {
         }}
       >
         {/* Location Picker */}
-        <LocationPicker
-          location="Munich Center"
-          onPress={() => console.log('Open location picker')}
-        />
+        <View className="px-6">
+          <LocationPicker
+            location="Munich Center"
+            onPress={() => console.log('Open location picker')}
+          />
+        </View>
 
         {/* Search Bar */}
-        <SearchBar
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-          placeholder="Shop name or service"
-        />
+        <View className="px-6">
+          <SearchBar
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            placeholder="Shop name or service"
+          />
+        </View>
 
         {/* Filter Chips */}
         <FilterChips
@@ -108,40 +124,51 @@ export default function HomeScreen() {
         />
 
         {/* Beauty Services Section */}
-        <View className="mt-6 mb-8">
-          <SectionHeader
-            title="Beauty services"
-            onSeeAll={() => console.log('See all services')}
-          />
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingHorizontal: 16 }}
-            className="flex-row"
-          >
-            {BEAUTY_SERVICES.map((service) => (
-              <ServiceCategoryCard
-                key={service.id}
-                image={service.image}
-                title={service.title}
-                onPress={() => handleServicePress(service.id)}
-              />
-            ))}
-          </ScrollView>
+        <View className="mb-6 mt-6">
+          <View className="px-6">
+            <SectionHeader
+              title="Beauty Services"
+              onSeeAll={() => console.log('See all services')}
+            />
+          </View>
+          <View className="px-6">
+            <View className="flex-row justify-between mb-4">
+              {BEAUTY_SERVICES.slice(0, 3).map((service) => (
+                <ServiceCategoryCard
+                  key={service.id}
+                  image={service.image}
+                  title={service.title}
+                  onPress={() => handleServicePress(service.id)}
+                />
+              ))}
+            </View>
+            <View className="flex-row justify-between">
+              {BEAUTY_SERVICES.slice(3, 6).map((service) => (
+                <ServiceCategoryCard
+                  key={service.id}
+                  image={service.image}
+                  title={service.title}
+                  onPress={() => handleServicePress(service.id)}
+                />
+              ))}
+            </View>
+          </View>
         </View>
 
         {/* Popular Near You Section */}
         {popularBusinesses.length > 0 && (
           <View className="mb-6">
-            <SectionHeader
-              title="Popular near you"
-              onSeeAll={() => console.log('See all popular')}
-            />
+            <View className="px-6">
+              <SectionHeader
+                title="Popular near you"
+                onSeeAll={() => console.log('See all popular')}
+              />
+            </View>
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{ paddingHorizontal: 16 }}
               className="flex-row"
+              contentContainerStyle={{ paddingLeft: 24, paddingRight: 24 }}
             >
               {popularBusinesses.map((business) => (
                 <View key={business.id} className="mr-4" style={{ width: 280 }}>
@@ -158,15 +185,17 @@ export default function HomeScreen() {
         {/* Best Offers Section */}
         {mockOffers.length > 0 && (
           <View className="mb-8">
-            <SectionHeader
-              title="Best Offers"
-              onSeeAll={() => console.log('See all offers')}
-            />
+            <View className="px-6">
+              <SectionHeader
+                title="Best Offers"
+                onSeeAll={() => console.log('See all offers')}
+              />
+            </View>
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{ paddingHorizontal: 16 }}
               className="flex-row"
+              contentContainerStyle={{ paddingLeft: 24, paddingRight: 24 }}
             >
               {mockOffers.map((offer) => {
                 const business = popularBusinesses.find(

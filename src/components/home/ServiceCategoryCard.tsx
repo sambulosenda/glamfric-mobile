@@ -40,17 +40,29 @@ export const ServiceCategoryCard: React.FC<ServiceCategoryCardProps> = ({
   return (
     <TouchableOpacity
       onPress={onPress}
-      className="items-center mr-3"
-      style={{ width: 120 }}
+      className="items-center mr-3 mt-30"
+      style={{ width: 88 }}
       activeOpacity={0.7}
       accessibilityRole="button"
       accessibilityLabel={`Browse ${title}`}
     >
       {/* Circular Image */}
-      <View className="w-[120px] h-[120px] rounded-full overflow-hidden mb-3 shadow-md bg-gray-100">
+      <View 
+        className="overflow-hidden mb-3 shadow-md"
+        style={{
+          width: 88,
+          height: 88,
+          borderRadius: 60,
+          backgroundColor: '#C4C4C4', // Figma fallback color
+        }}
+      >
         <Image
           source={{ uri: image }}
-          style={{ width: 120, height: 120 }}
+          style={{ 
+            width: 88, 
+            height: 88,
+            borderRadius: 60,
+          }}
           contentFit="cover"
           transition={200}
         />
@@ -58,7 +70,8 @@ export const ServiceCategoryCard: React.FC<ServiceCategoryCardProps> = ({
 
       {/* Title */}
       <Text
-        className="text-sm font-medium text-gray-900 text-center leading-5"
+        className="text-center font-normal text-[13px] tracking-[0.1px] text-dark-0"
+        style={{ fontFamily: 'DM-Sans' }}
         numberOfLines={2}
         ellipsizeMode="tail"
       >

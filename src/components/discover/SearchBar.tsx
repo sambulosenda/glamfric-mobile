@@ -50,7 +50,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   };
 
   return (
-    <View className="px-4 py-3 bg-white">
+    <View className="py-3 bg-white">
       <View
         className={`flex-row items-center rounded-xl px-4 py-3.5 ${
           isFocused
@@ -59,7 +59,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
         }`}
       >
         {/* Search Icon */}
-        <Search size={22} color="#717171" className="mr-3" />
+        <Search size={15} color="#717171" style={{ marginRight: 4 }} />
 
         {/* Text Input */}
         <TextInput
@@ -68,9 +68,16 @@ export const SearchBar: React.FC<SearchBarProps> = ({
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           placeholder={placeholder}
-          placeholderTextColor="#B0B0B0"
+          placeholderTextColor="#8F90A6"
           editable={!disabled}
-          className="flex-1 text-base text-gray-900 font-normal"
+          style={{
+            flex: 1,
+            fontFamily: 'DM-Sans',
+            fontSize: 15,
+            fontWeight: '400',
+            lineHeight: 22.5,
+            color: '#1C1C28', // Text color for typed content
+          }}
           returnKeyType="search"
           autoCapitalize="none"
           autoCorrect={false}

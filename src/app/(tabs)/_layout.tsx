@@ -1,11 +1,11 @@
 import { Tabs } from 'expo-router';
-import { Home, Calendar, Heart, User } from 'lucide-react-native';
+import { Search, Calendar, Heart, User } from 'lucide-react-native';
 
 export default function TabsLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#ef4444',
+        tabBarActiveTintColor: '#2C01E2', // Brand primary color
         tabBarInactiveTintColor: '#9ca3af',
         headerShown: false,
         tabBarStyle: {
@@ -17,9 +17,9 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          title: 'Discover',
           tabBarIcon: ({ color, size }) => (
-            <Home size={size} color={color} />
+            <Search size={size} color={color} />
           ),
         }}
       />

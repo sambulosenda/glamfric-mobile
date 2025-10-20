@@ -56,7 +56,7 @@ export const theme = {
   typography: {
     // Font families
     fontFamily: {
-      sans: ['System', 'Arial', 'sans-serif'],
+      sans: ['DM-Sans', 'Arial', 'sans-serif'],
       mono: ['SF Mono', 'Monaco', 'monospace'],
     },
     

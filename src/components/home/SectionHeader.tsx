@@ -31,9 +31,18 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
   onSeeAll,
 }) => {
   return (
-    <View className="flex-row items-center justify-between px-4 mb-4">
+    <View className="flex-row items-center justify-between mb-8">
       {/* Title */}
-      <Text className="text-xl font-bold text-gray-900">{title}</Text>
+      <Text 
+        style={{
+          color: '#1C1C28',
+          fontFamily: 'DM-Sans-Bold',
+          fontSize: 19,
+          letterSpacing: -0.38,
+        }}
+      >
+        {title}
+      </Text>
 
       {/* See All Link */}
       {onSeeAll && (
@@ -44,10 +53,17 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
           accessibilityRole="button"
           accessibilityLabel={`See all ${title}`}
         >
-          <Text className="text-sm font-semibold text-red-500 mr-1">
+          <Text 
+            className="mr-1"
+            style={{
+              fontSize: 14,
+              fontFamily: 'DM-Sans-SemiBold',
+              color: '#2C01E2', // Brand primary color
+            }}
+          >
             see all
           </Text>
-          <ChevronRight size={16} color="#EF4444" />
+          <ChevronRight size={16} color="#2C01E2" />
         </TouchableOpacity>
       )}
     </View>

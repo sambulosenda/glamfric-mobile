@@ -61,12 +61,12 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
   };
 
   return (
-    <View className="bg-white pb-3">
+    <View className="bg-white pb-3 mt-4 mb-4">
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerClassName="px-4"
         className="flex-row"
+        contentContainerStyle={{ paddingLeft: 24, paddingRight: 24 }}
       >
         {/* Gender Filter */}
         <TouchableOpacity
@@ -80,21 +80,33 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
                 : 'all';
             onFilterChange({ gender: next });
           }}
-          className={`flex-row items-center px-4 py-2.5 rounded-full mr-2.5 ${
+          className={`flex-row items-start px-3 py-1 rounded-full mr-2.5 ${
             filters.gender !== 'all'
               ? 'bg-gray-900'
-              : 'bg-white border-[1.5px] border-gray-300'
+              : ''
           }`}
+          style={{
+            backgroundColor: filters.gender !== 'all' ? undefined : '#F2F2F5',
+            gap: 10,
+          }}
           activeOpacity={0.7}
           accessibilityRole="button"
           accessibilityLabel={`Filter by gender: ${getGenderLabel()}`}
         >
           <Text
-            className={`text-[15px] ${
+            className={`${
               filters.gender !== 'all'
-                ? 'font-semibold text-white'
-                : 'font-medium text-gray-700'
+                ? 'text-white'
+                : ''
             }`}
+            style={{
+              color: filters.gender !== 'all' ? '#FFFFFF' : '#1C1C28',
+              textAlign: 'center',
+              fontFamily: 'DM-Sans',
+              fontSize: 13,
+              fontWeight: '400',
+              letterSpacing: 0.1,
+            }}
           >
             {getGenderLabel()}
           </Text>
@@ -119,21 +131,28 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
                 : 'all';
             onFilterChange({ priceRange: next });
           }}
-          className={`flex-row items-center px-4 py-2.5 rounded-full mr-2.5 ${
+          className={`flex-row items-start px-3 py-1 rounded-full mr-2.5 ${
             filters.priceRange !== 'all'
               ? 'bg-gray-900'
-              : 'bg-white border-[1.5px] border-gray-300'
+              : ''
           }`}
+          style={{
+            backgroundColor: filters.priceRange !== 'all' ? undefined : '#F2F2F5',
+            gap: 10,
+          }}
           activeOpacity={0.7}
           accessibilityRole="button"
           accessibilityLabel={`Filter by price: ${getPriceLabel()}`}
         >
           <Text
-            className={`text-[15px] ${
-              filters.priceRange !== 'all'
-                ? 'font-semibold text-white'
-                : 'font-medium text-gray-700'
-            }`}
+            style={{
+              color: filters.priceRange !== 'all' ? '#FFFFFF' : '#1C1C28',
+              textAlign: 'center',
+              fontFamily: 'DM-Sans',
+              fontSize: 13,
+              fontWeight: '400',
+              letterSpacing: 0.1,
+            }}
           >
             {getPriceLabel()}
           </Text>
@@ -147,11 +166,15 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
         {/* Offers Filter */}
         <TouchableOpacity
           onPress={() => onFilterChange({ hasOffers: !filters.hasOffers })}
-          className={`flex-row items-center px-4 py-2.5 rounded-full mr-2.5 ${
+          className={`flex-row items-start px-3 py-1 rounded-full mr-2.5 ${
             filters.hasOffers
               ? 'bg-gray-900'
-              : 'bg-white border-[1.5px] border-gray-300'
+              : ''
           }`}
+          style={{
+            backgroundColor: filters.hasOffers ? undefined : '#F2F2F5',
+            gap: 10,
+          }}
           activeOpacity={0.7}
           accessibilityRole="button"
           accessibilityLabel="Filter by offers"
@@ -163,11 +186,14 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
             className="mr-1.5"
           />
           <Text
-            className={`text-[15px] ${
-              filters.hasOffers
-                ? 'font-semibold text-white'
-                : 'font-medium text-gray-700'
-            }`}
+            style={{
+              color: filters.hasOffers ? '#FFFFFF' : '#1C1C28',
+              textAlign: 'center',
+              fontFamily: 'DM-Sans',
+              fontSize: 13,
+              fontWeight: '400',
+              letterSpacing: 0.1,
+            }}
           >
             Offers
           </Text>
@@ -185,12 +211,25 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
                 : 'rating';
             onFilterChange({ sortBy: next });
           }}
-          className="flex-row items-center px-4 py-2.5 rounded-full bg-white border-[1.5px] border-gray-300"
+          className="flex-row items-start px-3 py-1 rounded-full"
+          style={{
+            backgroundColor: '#F2F2F5',
+            gap: 10,
+          }}
           activeOpacity={0.7}
           accessibilityRole="button"
           accessibilityLabel={`Sort by ${getSortLabel()}`}
         >
-          <Text className="text-[15px] font-medium text-gray-700">
+          <Text
+            style={{
+              color: '#1C1C28',
+              textAlign: 'center',
+              fontFamily: 'DM-Sans',
+              fontSize: 13,
+              fontWeight: '400',
+              letterSpacing: 0.1,
+            }}
+          >
             {getSortLabel()}
           </Text>
           <TrendingUp size={16} color="#717171" className="ml-1.5" />
