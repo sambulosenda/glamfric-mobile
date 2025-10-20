@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useState } from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   TextInputProps,
   NativeSyntheticEvent,
 } from 'react-native';
+import { getInputStyles } from '@/theme';
 
 export interface FormInputProps extends Omit<TextInputProps, 'onChange'> {
   label: string;
@@ -15,43 +16,63 @@ export interface FormInputProps extends Omit<TextInputProps, 'onChange'> {
 }
 
 /**
- * FormInput Component
+ * FormInput Component - Enhanced with Universal Theme
  *
- * A reusable form input with:
- * - Label
- * - Inline error messages
- * - Disabled state styling
- * - Proper accessibility labels
- * - Forward ref support for focus management
+ * Features:
+ * - Uses enhanced universal theme system
+ * - Focus states with visual feedback
+ * - Computed styles for maintainability
+ * - Proper accessibility support
+ * - Consistent with app-wide design tokens
  */
 export const FormInput = forwardRef<TextInput, FormInputProps>(
-  ({ label, error, disabled, className, ...props }, ref) => {
+  ({ label, error, disabled = false, onFocus, onBlur, ...props }, ref) => {
+    const [focused, setFocused] = useState(false);
     const hasError = !!error;
 
+    // Get computed styles from enhanced universal theme
+    const styles = getInputStyles({ hasError, disabled, focused });
+    
+    const handleFocus = (e: any) => {
+      setFocused(true);
+      onFocus?.(e);
+    };
+    
+    const handleBlur = (e: any) => {
+      setFocused(false);
+      onBlur?.(e);
+    };
+
     return (
-      <View className="mb-4">
-        <Text className="text-sm font-medium text-gray-700 mb-2">
+      <View 
+        className="flex flex-col items-start self-stretch"
+        style={styles.container}
+      >
+        {/* Label */}  
+        <Text style={styles.label}>
           {label}
         </Text>
+        
+        {/* Input Field */}
         <TextInput
           ref={ref}
-          className={`
-            border rounded-lg px-4 py-3 text-base
-            ${hasError ? 'border-red-500' : 'border-gray-300'}
-            ${disabled ? 'bg-gray-100 text-gray-500' : 'bg-white text-gray-900'}
-            ${className || ''}
-          `.trim()}
-          placeholderTextColor="#9CA3AF"
-          textAlignVertical="center"
+          className="self-stretch"
+          style={styles.input}
+          placeholderTextColor={styles.placeholderTextColor}
           editable={!disabled}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          textAlignVertical="center"
           accessible
           accessibilityLabel={label}
           accessibilityHint={error}
-          accessibilityState={{ disabled: !!disabled }}
+          accessibilityState={{ disabled }}
           {...props}
         />
+        
+        {/* Error Message */}
         {hasError && (
-          <Text className="text-red-600 text-sm mt-1.5" accessibilityLiveRegion="polite">
+          <Text style={styles.error} accessibilityLiveRegion="polite">
             {error}
           </Text>
         )}

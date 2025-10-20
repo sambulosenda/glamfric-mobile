@@ -1,82 +1,86 @@
 import React from 'react';
 import { TouchableOpacity, Text, ActivityIndicator, TouchableOpacityProps } from 'react-native';
+import { getButtonStyles } from '@/theme';
 
-export interface FormButtonProps extends TouchableOpacityProps {
+export interface FormButtonProps extends Omit<TouchableOpacityProps, 'style'> {
   title: string;
   loading?: boolean;
-  variant?: 'primary' | 'secondary' | 'outline';
+  variant?: 'primary' | 'secondary' | 'ghost';
+  size?: 'small' | 'medium' | 'large';
   fullWidth?: boolean;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
 }
 
 /**
- * FormButton Component
+ * FormButton Component - Enhanced with Universal Theme
  *
- * A reusable form button with:
- * - Loading state with spinner
- * - Multiple variants (primary, secondary, outline)
- * - Disabled state styling
- * - Proper accessibility
- * - Full width option
+ * Features:
+ * - Uses enhanced universal theme system
+ * - Multiple variants and sizes
+ * - Loading states with spinner
+ * - Icon support (left/right)
+ * - Computed styles for maintainability
+ * - Proper accessibility support
  */
 export const FormButton: React.FC<FormButtonProps> = ({
   title,
   loading = false,
   variant = 'primary',
+  size = 'medium',
   fullWidth = true,
+  leftIcon,
+  rightIcon,
   disabled,
-  className,
+  onPress,
   ...props
 }) => {
   const isDisabled = disabled || loading;
+  
+  // Get computed styles from enhanced universal theme
+  const styles = getButtonStyles({ 
+    variant, 
+    size, 
+    fullWidth, 
+    disabled: isDisabled 
+  });
 
-  const variantStyles = {
-    primary: {
-      container: 'bg-red-500',
-      containerDisabled: 'bg-red-300',
-      text: 'text-white',
-    },
-    secondary: {
-      container: 'bg-gray-600',
-      containerDisabled: 'bg-gray-300',
-      text: 'text-white',
-    },
-    outline: {
-      container: 'bg-transparent border-2 border-red-500',
-      containerDisabled: 'bg-transparent border-2 border-red-300',
-      text: 'text-red-500',
-    },
+  const handlePress = (e: any) => {
+    if (!isDisabled && onPress) {
+      onPress(e);
+    }
   };
-
-  const styles = variantStyles[variant];
 
   return (
     <TouchableOpacity
-      className={`
-        rounded-lg py-4 items-center justify-center
-        ${fullWidth ? 'w-full' : ''}
-        ${isDisabled ? styles.containerDisabled : styles.container}
-        ${className || ''}
-      `.trim()}
+      onPress={handlePress}
       disabled={isDisabled}
+      style={styles.button}
       accessible
       accessibilityLabel={title}
       accessibilityRole="button"
-      accessibilityState={{ disabled: isDisabled, busy: loading }}
+      accessibilityState={{ disabled: isDisabled }}
       {...props}
     >
-      {loading ? (
-        <ActivityIndicator
-          color={variant === 'outline' ? '#EF4444' : '#FFFFFF'}
-          testID="form-button-spinner"
+      {/* Left Icon */}
+      {leftIcon && !loading && leftIcon}
+      
+      {/* Loading Spinner */}
+      {loading && (
+        <ActivityIndicator 
+          size="small" 
+          color={styles.spinnerColor}
+          style={{ marginRight: 8 }}
         />
-      ) : (
-        <Text
-          className={`font-semibold text-base ${styles.text}`}
-          style={{ opacity: isDisabled ? 0.6 : 1 }}
-        >
-          {title}
-        </Text>
       )}
+      
+      {/* Button Text */}
+      <Text style={styles.text}>
+        {loading ? 'Loading...' : title}
+      </Text>
+      
+      {/* Right Icon */}
+      {rightIcon && !loading && rightIcon}
     </TouchableOpacity>
   );
 };
