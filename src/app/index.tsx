@@ -1,14 +1,15 @@
 import { Redirect } from 'expo-router';
 import { View, ActivityIndicator } from 'react-native';
-import { useAuthStore } from '@/store';
+import { useAuthStore, useUIStore } from '@/store';
 
 /**
- * Root index - redirects based on auth status
+ * Root index - redirects based on onboarding and auth status
  *
- * GUEST BROWSING ENABLED:
- * - Both authenticated and guest users are directed to the main tabs
- * - Individual screens handle auth requirements via AuthGuard
- * - This allows users to browse without forced login
+ * NAVIGATION FLOW:
+ * 1. Show onboarding for first-time users
+ * 2. After onboarding, enable guest browsing
+ * 3. Both authenticated and guest users are directed to the main tabs
+ * 4. Individual screens handle auth requirements via AuthGuard
  *
  * Performance Note:
  * Using <Redirect /> instead of router.replace() in useEffect eliminates
@@ -16,6 +17,7 @@ import { useAuthStore } from '@/store';
  */
 export default function Index() {
   const isLoading = useAuthStore((state) => state.isLoading);
+  const onboardingCompleted = useUIStore((state) => state.onboardingCompleted);
 
   // Show loading while checking auth state
   if (isLoading) {
@@ -24,6 +26,11 @@ export default function Index() {
         <ActivityIndicator size="large" color="#ef4444" />
       </View>
     );
+  }
+
+  // First-time users see onboarding
+  if (!onboardingCompleted) {
+    return <Redirect href="/onboarding" />;
   }
 
   // Allow guest browsing - all users go to tabs
