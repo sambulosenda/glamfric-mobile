@@ -19,9 +19,7 @@ interface OnboardingSlide {
   id: number;
   title: string;
   description: string;
-  backgroundColor: string;
-  // You can replace these with actual image URIs later
-  imageSource?: any;
+  imageSource: any;
 }
 
 const slides: OnboardingSlide[] = [
@@ -29,19 +27,19 @@ const slides: OnboardingSlide[] = [
     id: 1,
     title: 'Discover Beauty Services',
     description: 'Find the best salons, spas, and beauty professionals near you',
-    backgroundColor: '#2C01E2', // Brand purple
+    imageSource: require('../../assets/bg.png'),
   },
   {
     id: 2,
     title: 'Book with Ease',
     description: 'Schedule appointments instantly and manage your bookings effortlessly',
-    backgroundColor: '#6366F1', // Lighter purple
+    imageSource: require('../../assets/bg-2.png'),
   },
   {
     id: 3,
     title: 'Get Glamorous',
     description: 'Experience top-rated beauty services and look your absolute best',
-    backgroundColor: '#8B5CF6', // Even lighter purple
+    imageSource: require('../../assets/bg-3.png'),
   },
 ];
 
@@ -99,17 +97,19 @@ export default function OnboardingScreen() {
               style={{ width: SCREEN_WIDTH }}
               className="flex-1"
             >
-              {/* Background - Replace with ImageBackground when you have images */}
-              <View
-                style={{ backgroundColor: slide.backgroundColor }}
-                className="flex-1 justify-between px-6 pt-8 pb-6"
+              {/* Background Image */}
+              <ImageBackground
+                source={slide.imageSource}
+                style={{ flex: 1 }}
+                resizeMode="cover"
+                className="justify-between px-6 pt-8 pb-6"
               >
                 {/* Text Content on Top */}
                 <View className="flex-1 justify-center items-center px-4">
-                  <Text className="text-white text-4xl font-bold text-center mb-6">
+                  <Text className="text-white text-4xl font-bold text-center mb-6 drop-shadow-lg">
                     {slide.title}
                   </Text>
-                  <Text className="text-white/90 text-lg text-center leading-7">
+                  <Text className="text-white text-lg text-center leading-7 drop-shadow-lg">
                     {slide.description}
                   </Text>
                 </View>
@@ -150,7 +150,7 @@ export default function OnboardingScreen() {
                     </Text>
                   </TouchableOpacity>
                 </View>
-              </View>
+              </ImageBackground>
             </View>
           ))}
         </ScrollView>
