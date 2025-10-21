@@ -12,7 +12,9 @@ import { useAuthStore, useUIStore } from '@/store';
  * 4. Individual screens handle auth requirements via AuthGuard
  *
  * DEV MODE:
- * - In development mode (__DEV__), always show onboarding for testing
+ * - In development mode, respects onboarding state by default
+ * - Set EXPO_PUBLIC_FORCE_ONBOARDING=true to always show onboarding for testing
+ * - Set EXPO_PUBLIC_RESET_ONBOARDING=true to reset onboarding state once
  *
  * Performance Note:
  * Using <Redirect /> instead of router.replace() in useEffect eliminates
@@ -21,6 +23,22 @@ import { useAuthStore, useUIStore } from '@/store';
 export default function Index() {
   const isLoading = useAuthStore((state) => state.isLoading);
   const onboardingCompleted = useUIStore((state) => state.onboardingCompleted);
+  const setOnboardingCompleted = useUIStore((state) => state.setOnboardingCompleted);
+
+  // Debug logging in development
+  if (__DEV__) {
+    console.log('🔍 Index Debug:', {
+      isLoading,
+      onboardingCompleted,
+      EXPO_PUBLIC_FORCE_ONBOARDING: process.env.EXPO_PUBLIC_FORCE_ONBOARDING,
+      EXPO_PUBLIC_RESET_ONBOARDING: process.env.EXPO_PUBLIC_RESET_ONBOARDING,
+    });
+  }
+
+  // Reset onboarding in dev if RESET_ONBOARDING is set
+  if (__DEV__ && process.env.EXPO_PUBLIC_RESET_ONBOARDING === 'true' && onboardingCompleted) {
+    setOnboardingCompleted(false);
+  }
 
   // Show loading while checking auth state
   if (isLoading) {
@@ -31,8 +49,8 @@ export default function Index() {
     );
   }
 
-  // In development mode, always show onboarding for testing
-  if (__DEV__) {
+  // In development mode, respect onboarding state unless explicitly forced
+  if (__DEV__ && process.env.EXPO_PUBLIC_FORCE_ONBOARDING === 'true') {
     return <Redirect href="/onboarding" />;
   }
 

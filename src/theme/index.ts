@@ -350,23 +350,23 @@ export const getButtonStyles = ({
   disabled?: boolean;
 }) => {
   const variantStyles = theme.components.button[variant];
-  
+
   // Size configurations
   const sizeConfig = {
     small: { height: 36, paddingHorizontal: 12, fontSize: theme.typography.fontSize.sm },
     medium: { height: 48, paddingHorizontal: 16, fontSize: variantStyles.fontSize },
     large: { height: 56, paddingHorizontal: 20, fontSize: theme.typography.fontSize.lg },
   };
-  
+
   const sizeStyles = sizeConfig[size];
-  
+
   const buttonStyle = {
     height: sizeStyles.height,
     paddingHorizontal: sizeStyles.paddingHorizontal,
     paddingVertical: variantStyles.paddingVertical,
     borderRadius: variantStyles.borderRadius,
-    backgroundColor: disabled 
-      ? variantStyles.disabled.backgroundColor 
+    backgroundColor: disabled
+      ? variantStyles.disabled.backgroundColor
       : variantStyles.backgroundColor,
     flexDirection: 'row' as const,
     alignItems: 'center' as const,
@@ -376,8 +376,8 @@ export const getButtonStyles = ({
     // Add border styles conditionally for secondary variant
     ...(variant === 'secondary' && {
       borderWidth: 1,
-      borderColor: disabled 
-        ? (variantStyles.disabled as any).borderColor 
+      borderColor: disabled
+        ? (variantStyles.disabled as any).borderColor
         : variantStyles.borderColor,
     }),
   };

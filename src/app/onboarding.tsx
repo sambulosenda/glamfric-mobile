@@ -7,12 +7,13 @@ import {
   NativeSyntheticEvent,
   NativeScrollEvent,
   ImageBackground,
-  TouchableOpacity,
   StatusBar,
   Animated,
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useUIStore } from '@/store';
+import { FormButton } from '@/components/forms/FormButton';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -49,6 +50,7 @@ export default function OnboardingScreen() {
   const scrollViewRef = useRef<ScrollView>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const setOnboardingCompleted = useUIStore((state) => state.setOnboardingCompleted);
+  const insets = useSafeAreaInsets();
 
   // Animated values for background fade transitions
   const fadeAnims = useRef(
@@ -74,6 +76,12 @@ export default function OnboardingScreen() {
     });
   }, [currentIndex]);
 
+  // Shared completion logic
+  const completeOnboarding = () => {
+    setOnboardingCompleted(true);
+    router.replace('/(tabs)');
+  };
+
   const handleNext = () => {
     if (currentIndex < slides.length - 1) {
       scrollViewRef.current?.scrollTo({
@@ -81,24 +89,22 @@ export default function OnboardingScreen() {
         animated: true,
       });
     } else {
-      handleGetStarted();
+      completeOnboarding();
     }
   };
 
   const handleSkip = () => {
-    setOnboardingCompleted(true);
-    router.replace('/(tabs)');
+    completeOnboarding();
   };
 
   const handleGetStarted = () => {
-    setOnboardingCompleted(true);
-    router.replace('/(tabs)');
+    completeOnboarding();
   };
 
   const isLastSlide = currentIndex === slides.length - 1;
 
   return (
-    <View className="flex-1">
+    <View className="flex-1" style={{ paddingTop: insets.top }}>
       <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
 
       {/* Background Images Layer - Fading */}
@@ -174,25 +180,23 @@ export default function OnboardingScreen() {
 
         {/* Buttons Side by Side - Fixed */}
         <View className="flex-row gap-3 px-6">
-          <TouchableOpacity
+          <FormButton
+            title="Skip for now"
             onPress={handleSkip}
-            className="flex-1 bg-white/20 backdrop-blur border-2 border-white/50 rounded-full py-4 items-center justify-center"
+            className="flex-1 bg-white/20 backdrop-blur border-2 border-white/50 rounded-lg py-4 items-center justify-center"
+            textClassName="text-white text-base font-semibold"
+            spinnerColor="#ffffff"
             activeOpacity={0.7}
-          >
-            <Text className="text-white text-base font-semibold">
-              Skip
-            </Text>
-          </TouchableOpacity>
+          />
 
-          <TouchableOpacity
+          <FormButton
+            title={isLastSlide ? 'Get Started' : 'Next'}
             onPress={handleNext}
-            className="flex-1 bg-white rounded-full py-4 items-center justify-center shadow-lg"
+            className="flex-1 bg-white rounded-lg py-4 items-center justify-center shadow-lg"
+            textClassName="text-brand-700 text-base font-bold"
+            spinnerColor="#2201c7"
             activeOpacity={0.8}
-          >
-            <Text className="text-brand-700 text-base font-bold">
-              {isLastSlide ? 'Get Started' : 'Next'}
-            </Text>
-          </TouchableOpacity>
+          />
         </View>
       </View>
     </View>
