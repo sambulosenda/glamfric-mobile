@@ -128,7 +128,7 @@ export default function OnboardingScreen() {
       </View>
 
       {/* Scrolling Text Content Layer */}
-      <View className="flex-1 justify-end pb-12 px-6">
+      <View className="flex-1 justify-end pb-12">
         <ScrollView
           ref={scrollViewRef}
           horizontal
@@ -144,14 +144,13 @@ export default function OnboardingScreen() {
             <View
               key={slide.id}
               style={{ width: SCREEN_WIDTH }}
-              className="px-6"
             >
               {/* Text Content */}
-              <View className="mb-12">
+              <View className="mb-12 px-6">
                 <Text className="text-white text-5xl font-bold text-center mb-4 leading-tight">
                   {slide.title}
                 </Text>
-                <Text className="text-white/95 text-base text-center leading-6 px-8">
+                <Text className="text-white/95 text-base text-center leading-6 px-4">
                   {slide.description}
                 </Text>
               </View>
@@ -160,7 +159,7 @@ export default function OnboardingScreen() {
         </ScrollView>
 
         {/* Pagination Dots - Fixed */}
-        <View className="flex-row justify-center items-center mb-8">
+        <View className="flex-row justify-center items-center mb-8 px-6">
           {slides.map((_, index) => (
             <View
               key={index}
@@ -174,7 +173,7 @@ export default function OnboardingScreen() {
         </View>
 
         {/* Buttons Side by Side - Fixed */}
-        <View className="flex-row gap-3">
+        <View className="flex-row gap-3 px-6">
           <TouchableOpacity
             onPress={handleSkip}
             className="flex-1 bg-white/20 backdrop-blur border-2 border-white/50 rounded-full py-4 items-center justify-center"
