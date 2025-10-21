@@ -11,6 +11,9 @@ import { useAuthStore, useUIStore } from '@/store';
  * 3. Both authenticated and guest users are directed to the main tabs
  * 4. Individual screens handle auth requirements via AuthGuard
  *
+ * DEV MODE:
+ * - In development mode (__DEV__), always show onboarding for testing
+ *
  * Performance Note:
  * Using <Redirect /> instead of router.replace() in useEffect eliminates
  * unnecessary re-renders and provides smoother navigation experience.
@@ -26,6 +29,11 @@ export default function Index() {
         <ActivityIndicator size="large" color="#ef4444" />
       </View>
     );
+  }
+
+  // In development mode, always show onboarding for testing
+  if (__DEV__) {
+    return <Redirect href="/onboarding" />;
   }
 
   // First-time users see onboarding
