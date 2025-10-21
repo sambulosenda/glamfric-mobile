@@ -8,9 +8,9 @@ import {
   NativeScrollEvent,
   ImageBackground,
   TouchableOpacity,
+  StatusBar,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useUIStore } from '@/store';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -79,18 +79,20 @@ export default function OnboardingScreen() {
   const isLastSlide = currentIndex === slides.length - 1;
 
   return (
-    <SafeAreaView className="flex-1" edges={['top', 'bottom']}>
-      <View className="flex-1">
-        {/* Slides */}
-        <ScrollView
-          ref={scrollViewRef}
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          onScroll={handleScroll}
-          scrollEventThrottle={16}
-          className="flex-1"
-        >
+    <View className="flex-1">
+      <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
+      {/* Slides */}
+      <ScrollView
+        ref={scrollViewRef}
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+        decelerationRate="fast"
+        bounces={false}
+        className="flex-1"
+      >
           {slides.map((slide) => (
             <View
               key={slide.id}
@@ -102,59 +104,64 @@ export default function OnboardingScreen() {
                 source={slide.imageSource}
                 style={{ flex: 1 }}
                 resizeMode="cover"
-                className="justify-between px-6 pt-8 pb-6"
+                className="justify-end pb-12 px-6"
               >
-                {/* Text Content on Top */}
-                <View className="flex-1 justify-center items-center px-4">
-                  <Text className="text-white text-4xl font-bold text-center mb-6 drop-shadow-lg">
-                    {slide.title}
-                  </Text>
-                  <Text className="text-white text-lg text-center leading-7 drop-shadow-lg">
-                    {slide.description}
-                  </Text>
-                </View>
+                {/* Semi-transparent overlay for better text readability */}
+                <View className="absolute inset-0 bg-black/30" />
 
-                {/* Pagination Dots */}
-                <View className="flex-row justify-center items-center mb-8">
-                  {slides.map((_, index) => (
-                    <View
-                      key={index}
-                      className={`h-2 rounded-full mx-1 ${
-                        index === currentIndex
-                          ? 'bg-white w-8'
-                          : 'bg-white/40 w-2'
-                      }`}
-                    />
-                  ))}
-                </View>
-
-                {/* Buttons at Bottom */}
-                <View className="gap-4">
-                  <TouchableOpacity
-                    onPress={handleNext}
-                    className="bg-white rounded-2xl py-4 px-8 items-center justify-center"
-                    activeOpacity={0.8}
-                  >
-                    <Text className="text-brand-700 text-lg font-bold">
-                      {isLastSlide ? 'Get Started' : 'Next'}
+                {/* Content Container */}
+                <View className="z-10">
+                  {/* Text Content */}
+                  <View className="mb-12">
+                    <Text className="text-white text-5xl font-bold text-center mb-4 leading-tight">
+                      {slide.title}
                     </Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    onPress={handleSkip}
-                    className="bg-transparent border-2 border-white rounded-2xl py-4 px-8 items-center justify-center"
-                    activeOpacity={0.8}
-                  >
-                    <Text className="text-white text-lg font-semibold">
-                      Skip
+                    <Text className="text-white/95 text-base text-center leading-6 px-8">
+                      {slide.description}
                     </Text>
-                  </TouchableOpacity>
+                  </View>
+
+                  {/* Pagination Dots */}
+                  <View className="flex-row justify-center items-center mb-8">
+                    {slides.map((_, index) => (
+                      <View
+                        key={index}
+                        className={`h-2.5 rounded-full mx-1.5 transition-all ${
+                          index === currentIndex
+                            ? 'bg-white w-10'
+                            : 'bg-white/50 w-2.5'
+                        }`}
+                      />
+                    ))}
+                  </View>
+
+                  {/* Buttons Side by Side */}
+                  <View className="flex-row gap-3">
+                    <TouchableOpacity
+                      onPress={handleSkip}
+                      className="flex-1 bg-white/20 backdrop-blur border-2 border-white/50 rounded-full py-4 items-center justify-center"
+                      activeOpacity={0.7}
+                    >
+                      <Text className="text-white text-base font-semibold">
+                        Skip
+                      </Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      onPress={handleNext}
+                      className="flex-1 bg-white rounded-full py-4 items-center justify-center shadow-lg"
+                      activeOpacity={0.8}
+                    >
+                      <Text className="text-brand-700 text-base font-bold">
+                        {isLastSlide ? 'Get Started' : 'Next'}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </ImageBackground>
             </View>
           ))}
         </ScrollView>
-      </View>
-    </SafeAreaView>
+    </View>
   );
 }
