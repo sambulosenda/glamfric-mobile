@@ -64,3 +64,4 @@ export const AuthGuard: React.FC<AuthGuardProps> = React.memo(({
 
   return <>{children}</>;
 });
+

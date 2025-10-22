@@ -8,9 +8,8 @@ import {
   NativeSyntheticEvent,
 } from 'react-native';
 import { Eye, EyeOff } from 'lucide-react-native';
-import { getInputStyles } from '@/theme';
 
-export interface PasswordInputProps extends Omit<TextInputProps, 'onChange' | 'secureTextEntry'> {
+export interface PasswordInputProps extends Omit<TextInputProps, 'onChange' | 'secureTextEntry' | 'style' | 'className'> {
   label: string;
   error?: string;
   onSubmitEditing?: (e: NativeSyntheticEvent<{ text: string }>) => void;
@@ -21,18 +20,31 @@ export interface PasswordInputProps extends Omit<TextInputProps, 'onChange' | 's
   strengthColor?: string;
   showRequirements?: boolean;
   password?: string;
+  className?: string; // NativeWind className for container styles
+  labelClassName?: string; // NativeWind className for label text styles
+  inputClassName?: string; // NativeWind className for input field styles
+  errorClassName?: string; // NativeWind className for error message styles
+  toggleClassName?: string; // NativeWind className for eye icon positioning
+  strengthClassName?: string; // NativeWind className for password strength indicator container
 }
 
 /**
- * PasswordInput Component
+ * PasswordInput Component - Pure NativeWind Implementation
  *
  * A specialized password input with:
  * - Show/hide password toggle
  * - Optional password strength indicator
+ * - Password requirements checklist
  * - Inline error messages
  * - Disabled state styling
  * - Proper accessibility
  * - Forward ref support
+ *
+ * Usage:
+ * - Default: <PasswordInput label="Password" />
+ * - With error: <PasswordInput label="Password" error="Password required" />
+ * - With strength: <PasswordInput label="Password" showStrengthIndicator strengthScore={3} strengthLabel="Strong" />
+ * - Custom styling: <PasswordInput label="Password" inputClassName="bg-gray-100 border-2 border-brand-500" />
  */
 export const PasswordInput = forwardRef<TextInput, PasswordInputProps>(
   (
@@ -48,6 +60,12 @@ export const PasswordInput = forwardRef<TextInput, PasswordInputProps>(
       password = '',
       onFocus,
       onBlur,
+      className,
+      labelClassName,
+      inputClassName,
+      errorClassName,
+      toggleClassName,
+      strengthClassName,
       ...props
     },
     ref
@@ -56,14 +74,11 @@ export const PasswordInput = forwardRef<TextInput, PasswordInputProps>(
     const [focused, setFocused] = useState(false);
     const hasError = !!error;
 
-    // Get computed styles from enhanced universal theme
-    const styles = getInputStyles({ hasError, disabled, focused });
-    
     const handleFocus = (e: any) => {
       setFocused(true);
       onFocus?.(e);
     };
-    
+
     const handleBlur = (e: any) => {
       setFocused(false);
       onBlur?.(e);
@@ -86,26 +101,60 @@ export const PasswordInput = forwardRef<TextInput, PasswordInputProps>(
 
     const requirements = showRequirements && password ? getPasswordRequirements() : null;
 
+    // Compute NativeWind classes based on state
+    const getContainerClasses = () => {
+      if (className) return className;
+      return 'mb-4';
+    };
+
+    const getLabelClasses = () => {
+      if (labelClassName) return labelClassName;
+      return `text-[10px] font-normal font-dm-sans mb-1 ${disabled ? 'text-base-500' : 'text-base-900'}`;
+    };
+
+    const getInputClasses = () => {
+      if (inputClassName) return inputClassName;
+
+      // Match Figma design: px-2 py-3, rounded-base (8px), text-[15px], DM Sans 400
+      // Extra right padding (pr-12) for eye icon
+      const baseClasses = 'h-12 px-2 py-3 pr-12 rounded-base text-[15px] font-dm-sans font-normal self-stretch';
+      const bgClasses = disabled ? 'bg-base-100 text-base-500' : 'bg-white text-base-900';
+
+      let borderClasses = '';
+      if (hasError) {
+        borderClasses = 'border border-system-red-500';
+      } else if (focused) {
+        borderClasses = 'border-2 border-brand-500';
+      } else {
+        borderClasses = 'border border-base-300';
+      }
+
+      return `${baseClasses} ${bgClasses} ${borderClasses}`;
+    };
+
+    const getErrorClasses = () => {
+      if (errorClassName) return errorClassName;
+      return 'text-xs text-system-red-500 mt-1';
+    };
+
+    const getToggleClasses = () => {
+      if (toggleClassName) return toggleClassName;
+      return 'absolute right-3 top-3.5';
+    };
+
     return (
-      <View 
-        className="flex flex-col items-start self-stretch"
-        style={styles.container}
-      >
+      <View className={getContainerClasses()}>
         {/* Label */}
-        <Text style={styles.label}>
+        <Text className={getLabelClasses()}>
           {label}
         </Text>
-        
+
         {/* Input Container with Eye Icon */}
         <View className="relative self-stretch">
           <TextInput
             ref={ref}
-            className="self-stretch"
-            style={{
-              ...styles.input,
-              paddingRight: 48, // Space for eye icon
-            }}
-            placeholderTextColor={styles.placeholderTextColor}
+            className={getInputClasses()}
+            placeholderTextColor="#9ca3af"
             secureTextEntry={!showPassword}
             editable={!disabled}
             onFocus={handleFocus}
@@ -120,12 +169,12 @@ export const PasswordInput = forwardRef<TextInput, PasswordInputProps>(
             textContentType="password"
             {...props}
           />
-          
+
           {/* Show/Hide Password Toggle */}
           <TouchableOpacity
             onPress={togglePasswordVisibility}
             disabled={disabled}
-            className="absolute right-3 top-3.5"
+            className={getToggleClasses()}
             accessible
             accessibilityLabel={showPassword ? 'Hide password' : 'Show password'}
             accessibilityRole="button"
@@ -140,7 +189,7 @@ export const PasswordInput = forwardRef<TextInput, PasswordInputProps>(
 
         {/* Password Strength Indicator */}
         {showStrengthIndicator && strengthScore > 0 && !hasError && (
-          <View className="mt-2">
+          <View className={strengthClassName || "mt-2"}>
             <View className="flex-row gap-1 mb-1">
               {[1, 2, 3, 4].map((level) => (
                 <View
@@ -186,7 +235,10 @@ export const PasswordInput = forwardRef<TextInput, PasswordInputProps>(
 
         {/* Error Message */}
         {hasError && (
-          <Text style={styles.error} accessibilityLiveRegion="polite">
+          <Text
+            className={getErrorClasses()}
+            accessibilityLiveRegion="polite"
+          >
             {error}
           </Text>
         )}

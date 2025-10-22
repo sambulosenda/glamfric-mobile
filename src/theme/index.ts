@@ -217,8 +217,8 @@ export const theme = {
           color: colors.base[400],
         },
       },
-    },
-    
+
+      
     // Input styles (Design Tokens)
     input: {
       base: {
@@ -344,40 +344,40 @@ export const getButtonStyles = ({
   fullWidth = true,
   disabled = false,
 }: {
-  variant?: 'primary' | 'secondary' | 'ghost';
+  variant?: 'primary' | 'secondary' | 'ghost' | 'glassmorphic' | 'onboarding-primary';
   size?: 'small' | 'medium' | 'large';
   fullWidth?: boolean;
   disabled?: boolean;
 }) => {
   const variantStyles = theme.components.button[variant];
-  
+
   // Size configurations
   const sizeConfig = {
     small: { height: 36, paddingHorizontal: 12, fontSize: theme.typography.fontSize.sm },
     medium: { height: 48, paddingHorizontal: 16, fontSize: variantStyles.fontSize },
     large: { height: 56, paddingHorizontal: 20, fontSize: theme.typography.fontSize.lg },
   };
-  
+
   const sizeStyles = sizeConfig[size];
-  
+
   const buttonStyle = {
     height: sizeStyles.height,
     paddingHorizontal: sizeStyles.paddingHorizontal,
     paddingVertical: variantStyles.paddingVertical,
     borderRadius: variantStyles.borderRadius,
-    backgroundColor: disabled 
-      ? variantStyles.disabled.backgroundColor 
+    backgroundColor: disabled
+      ? variantStyles.disabled.backgroundColor
       : variantStyles.backgroundColor,
     flexDirection: 'row' as const,
     alignItems: 'center' as const,
     justifyContent: 'center' as const,
     gap: 8,
     ...(fullWidth && { alignSelf: 'stretch' as const }),
-    // Add border styles conditionally for secondary variant
-    ...(variant === 'secondary' && {
-      borderWidth: 1,
-      borderColor: disabled 
-        ? (variantStyles.disabled as any).borderColor 
+    // Add border styles conditionally for secondary and glassmorphic variants
+    ...((variant === 'secondary' || variant === 'glassmorphic') && {
+      borderWidth: (variantStyles as any).borderWidth || 1,
+      borderColor: disabled
+        ? (variantStyles.disabled as any).borderColor
         : variantStyles.borderColor,
     }),
   };
