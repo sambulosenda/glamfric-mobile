@@ -1,6 +1,87 @@
 import React from 'react';
 import { TouchableOpacity, Text, ActivityIndicator, TouchableOpacityProps } from 'react-native';
-import { getButtonStyles } from '@/theme';
+import { tv } from 'tailwind-variants';
+
+// Tailwind Variants configuration for button styles
+const buttonVariants = tv({
+  base: 'flex-row items-center justify-center rounded-base',
+  variants: {
+    variant: {
+      primary: 'bg-brand-500',
+      secondary: 'bg-transparent border border-brand-500',
+      ghost: 'bg-transparent',
+    },
+    size: {
+      small: 'h-9 px-3',
+      medium: 'h-12 px-4',
+      large: 'h-14 px-5',
+    },
+    fullWidth: {
+      true: 'self-stretch',
+      false: '',
+    },
+    disabled: {
+      true: '',
+    },
+  },
+  compoundVariants: [
+    // Primary disabled state
+    {
+      variant: 'primary',
+      disabled: true,
+      class: 'bg-base-300',
+    },
+    // Secondary disabled state
+    {
+      variant: 'secondary',
+      disabled: true,
+      class: 'border-base-300',
+    },
+  ],
+  defaultVariants: {
+    variant: 'primary',
+    size: 'medium',
+    fullWidth: true,
+  },
+});
+
+// Tailwind Variants configuration for text styles
+const textVariants = tv({
+  base: 'font-semibold',
+  variants: {
+    variant: {
+      primary: 'text-white',
+      secondary: 'text-brand-500',
+      ghost: 'text-brand-500',
+    },
+    size: {
+      small: 'text-sm',
+      medium: 'text-base',
+      large: 'text-lg',
+    },
+    disabled: {
+      true: '',
+    },
+  },
+  compoundVariants: [
+    // Primary disabled state
+    {
+      variant: 'primary',
+      disabled: true,
+      class: 'text-base-500',
+    },
+    // Secondary/Ghost disabled state
+    {
+      variant: ['secondary', 'ghost'],
+      disabled: true,
+      class: 'text-base-400',
+    },
+  ],
+  defaultVariants: {
+    variant: 'primary',
+    size: 'medium',
+  },
+});
 
 export interface FormButtonProps extends Omit<TouchableOpacityProps, 'style' | 'className'> {
   title: string;
@@ -16,25 +97,23 @@ export interface FormButtonProps extends Omit<TouchableOpacityProps, 'style' | '
 }
 
 /**
- * FormButton Component - Enhanced with Universal Theme + NativeWind Support
+ * FormButton Component - Tailwind Variants
  *
  * Features:
- * - Uses enhanced universal theme system OR NativeWind classes
- * - Multiple variants and sizes (when using theme)
+ * - Type-safe variants using tailwind-variants
  * - Loading states with spinner
  * - Icon support (left/right)
- * - Computed styles for maintainability
  * - Proper accessibility support
- * - NativeWind className support for custom styling
+ * - Custom className override support
  *
  * Usage:
- * - With theme: <FormButton variant="primary" title="Submit" />
- * - With NativeWind: <FormButton className="bg-white rounded-full" textClassName="text-brand-700" title="Custom" />
+ * <FormButton variant="primary" size="medium" title="Submit" />
+ * <FormButton className="bg-custom-500" textClassName="text-white" title="Custom" />
  */
 export const FormButton: React.FC<FormButtonProps> = ({
   title,
   loading = false,
-  variant,
+  variant = 'primary',
   size = 'medium',
   fullWidth = true,
   leftIcon,
@@ -43,21 +122,10 @@ export const FormButton: React.FC<FormButtonProps> = ({
   onPress,
   className,
   textClassName,
-  spinnerColor,
+  spinnerColor = '#fff',
   ...props
 }) => {
   const isDisabled = disabled || loading;
-
-  // Use NativeWind if className provided, otherwise use theme variant
-  const useNativeWind = !!className;
-
-  // Get computed styles from enhanced universal theme (only if not using NativeWind)
-  const themeStyles = !useNativeWind ? getButtonStyles({
-    variant: variant || 'primary',
-    size,
-    fullWidth,
-    disabled: isDisabled
-  }) : null;
 
   const handlePress = (e: any) => {
     if (!isDisabled && onPress) {
@@ -65,12 +133,15 @@ export const FormButton: React.FC<FormButtonProps> = ({
     }
   };
 
+  // Generate button and text classes using tailwind-variants
+  const buttonClass = className || buttonVariants({ variant, size, fullWidth, disabled: isDisabled });
+  const textClass = textClassName || textVariants({ variant, size, disabled: isDisabled });
+
   return (
     <TouchableOpacity
       onPress={handlePress}
       disabled={isDisabled}
-      className={className}
-      style={!useNativeWind ? themeStyles?.button : undefined}
+      className={buttonClass}
       accessible
       accessibilityLabel={title}
       accessibilityRole="button"
@@ -84,16 +155,13 @@ export const FormButton: React.FC<FormButtonProps> = ({
       {loading && (
         <ActivityIndicator
           size="small"
-          color={spinnerColor || themeStyles?.spinnerColor || '#fff'}
+          color={spinnerColor}
           className="mr-2"
         />
       )}
 
       {/* Button Text */}
-      <Text
-        className={textClassName}
-        style={!useNativeWind ? themeStyles?.text : undefined}
-      >
+      <Text className={textClass}>
         {loading ? 'Loading...' : title}
       </Text>
 

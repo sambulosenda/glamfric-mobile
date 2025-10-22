@@ -217,8 +217,8 @@ export const theme = {
           color: colors.base[400],
         },
       },
-    },
-    
+
+      
     // Input styles (Design Tokens)
     input: {
       base: {
@@ -344,7 +344,7 @@ export const getButtonStyles = ({
   fullWidth = true,
   disabled = false,
 }: {
-  variant?: 'primary' | 'secondary' | 'ghost';
+  variant?: 'primary' | 'secondary' | 'ghost' | 'glassmorphic' | 'onboarding-primary';
   size?: 'small' | 'medium' | 'large';
   fullWidth?: boolean;
   disabled?: boolean;
@@ -373,9 +373,9 @@ export const getButtonStyles = ({
     justifyContent: 'center' as const,
     gap: 8,
     ...(fullWidth && { alignSelf: 'stretch' as const }),
-    // Add border styles conditionally for secondary variant
-    ...(variant === 'secondary' && {
-      borderWidth: 1,
+    // Add border styles conditionally for secondary and glassmorphic variants
+    ...((variant === 'secondary' || variant === 'glassmorphic') && {
+      borderWidth: (variantStyles as any).borderWidth || 1,
       borderColor: disabled
         ? (variantStyles.disabled as any).borderColor
         : variantStyles.borderColor,
